@@ -1,0 +1,62 @@
+@media screen and (max-width: 440px) {
+  #top {
+    display: none;
+  }
+
+  #time {
+    font-size: 5rem;
+  }
+
+  #date {
+    font-size: 3rem;
+  }
+
+  #bottom {
+    width: 60vw;
+    left: 20vw;
+  }
+
+  .link {
+    font-size: 3rem;
+  }
+
+  .landscapedisclaimer {
+    display: block;
+    top: 1vh;
+  }
+
+}
+
+/* LANDSCAPE */
+@media only screen and (min-width: 441px) and (max-width : 650px) and (max-height: 441px){
+
+  .stats, .weather {
+    padding: 4vh;
+  }
+
+  #top {
+    font-size: 1rem;
+  }
+
+  #time {
+    font-size: 4rem;
+  }
+
+  #date {
+    font-size: 2rem;
+  }
+
+  #bottom {
+    width: 90vw;
+    left: 5vw;
+  }
+
+  .link {
+    font-size: 2rem;
+  }
+
+  #speedtest {
+    max-width: 15vw;
+    overflow-wrap: break-word;
+  }
+}

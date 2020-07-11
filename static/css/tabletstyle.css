@@ -1,0 +1,23 @@
+@media screen and (min-width: 651px) and (max-width: 999px) {
+  #top {
+    font-size: 1.5rem;
+  }
+
+  #time {
+    font-size: 5rem;
+  }
+
+  #date {
+    font-size: 3rem;
+  }
+
+  #bottom {
+    width: 60vw;
+    left: 20vw;
+  }
+
+  .link {
+    font-size: 3rem;
+  }
+
+}
