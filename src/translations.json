@@ -2,6 +2,7 @@
   "en" : {
     "temperatura": "temperature",
     "spazio libero": "free space",
-    "ip zerotier": "zerotier ip"
+    "ip zerotier": "zerotier ip",
+    "ip lan": "lan ip"
   }
 }
