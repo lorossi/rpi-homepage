@@ -64,7 +64,7 @@ function setSpeed(speed_obj) {
     type : 'POST',
     url : '/getspeed/',
     complete : function(data) {
-      $(speed_obj).append(data.responseJSON["string"]);
+      $(speed_obj).text(data.responseJSON["string"]);
     }
   })
 }
