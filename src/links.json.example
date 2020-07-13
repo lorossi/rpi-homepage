@@ -1,0 +1,14 @@
+[
+  {
+    "display_name": "SHOWN NAME",
+    "name": "SERVICE NAME",
+    "port": SERVICE PORT,
+    "path": "SERVICE PATH"
+  },
+  {
+    "display_name": "SHOWN NAME",
+    "name": "SERVICE NAME",
+    "port": SERVICE PORT,
+    "path": "SERVICE PATH"
+  }
+]
