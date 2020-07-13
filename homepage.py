@@ -97,9 +97,9 @@ def returnColor(brightness, settings):
 
     color = {}
     if brightness > threshold_brightness:
-        color["text_color"] = "#000000"
+        color["text_color"] = settings["Interface"]["text_colors"]["dark"]
     else:
-        color["text_color"] = "#FFFFFF"
+        color["text_color"] = settings["Interface"]["text_colors"]["light"]
 
     return color
 
@@ -153,7 +153,7 @@ def loadTranslations(lang, path="src/translations.json"):
 def getWeather(settings):
     open_weather_api_key = settings["OpenWeatherMap"]["api_key"]
     city = settings["OpenWeatherMap"]["city"]
-    lang = settings["OpenWeatherMap"]["lang"]
+    lang = settings["Interface"]["lang"]
 
     request_url = (
                     f"http://api.openweathermap.org/data/2.5/weather?"
@@ -216,7 +216,7 @@ def loadData(settings):
         {
             "name": "speedtest",
             "string": "",
-            "hidden": "dowload upload ping"
+            "hidden": "down up ping"
         }
     ]
 
