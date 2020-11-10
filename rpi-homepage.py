@@ -188,7 +188,7 @@ def loadData(settings):
     folder = settings["Interface"]["folder"]
     ips = loadIps()
 
-    raw_temperature = round(psutil.sensors_temperatures()['cpu-thermal'][0][1], 1)
+    raw_temperature = round(psutil.sensors_temperatures()['cpu_thermal'][0][1], 1)
     raw_cpu = psutil.cpu_percent()
     raw_ram = psutil.virtual_memory()[2]
 
@@ -250,6 +250,16 @@ def loadData(settings):
 
     return data
 
+
+# get cpu temperature
+def getTemperature():
+    raw_temperature = round(psutil.sensors_temperatures()['cpu_thermal'][0][1], 1)
+    temperature = {
+        "raw": raw_temperature,
+        "unit": "°C",
+        "formatted": f"{raw_temperature}°C"
+    }
+    return temperature
 
 # get internet connection speed from speedtest
 def getSpeed():
@@ -315,6 +325,10 @@ def get_speed():
     speedtest = getSpeed()
     return jsonify(speedtest)
 
+@app.route("/gettemperature/", methods=['GET'])
+def get_temperature():
+    temperaure = getTemperature()
+    return jsonify(temperaure)
 
 @app.route("/getdata/", methods=['POST'])
 def get_data():

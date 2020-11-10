@@ -1,0 +1,4 @@
+__pycache__/
+tests/
+src/settings*.json
+src/links*.json
