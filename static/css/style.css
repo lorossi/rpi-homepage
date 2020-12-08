@@ -33,25 +33,26 @@ a:hover {
    filter: invert(100%);
 }
 
-.container {
-  position: fixed;
-  display: inline-block;
-}
-
-.flexcontainer {
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.flexcontainerwide {
+.container#top {
   position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
 }
+
+.container#center {
+  position: fixed;
+  display: inline-block;
+}
+
+.container#bottom {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 
 .left {
   text-align: left;
@@ -61,9 +62,6 @@ a:hover {
   text-align: right;
 }
 
-.center {
-
-}
 
 .datetime {
   z-index: 100;

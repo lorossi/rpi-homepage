@@ -1,5 +1,5 @@
 @media screen and (min-width: 1000px) and (max-width: 1300px) {
-  #top {
+  .container#top {
     font-size: 1.5rem;
   }
 
@@ -11,7 +11,7 @@
     font-size: 4rem;
   }
 
-  #bottom {
+  .container#bottom {
     width: 60vw;
     left: 20vw;
   }
