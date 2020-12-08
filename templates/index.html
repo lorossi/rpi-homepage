@@ -28,7 +28,7 @@
     }
   </style>
 
-  <div class="flexcontainerwide" id="top">
+  <div class="container" id="top">
     <div class="left">
       <div class="weather">
         <p id="city"></p>
@@ -37,7 +37,6 @@
         <p id="description"></p></div>
     </div>
     <div class="right">
-
       <div class="stats">
         {% for d in data %}
           <div class="stat" id="{{ d["name"] }}"><span class="hidden">{{ d["hidden"] }}</span><span class="value" data="{{ d["name"] }}">{{ d["string"] }}</span></div>
@@ -46,7 +45,6 @@
     </div>
   </div>
 
-
   <div class="container" id="center">
       <div class="datetime">
         <div id="time"></div>
@@ -54,7 +52,7 @@
       </div>
   </div>
 
-  <div class="flexcontainer" id="bottom">
+  <div class="container" id="bottom">
     {% for l in links %}
         <div class="link"><a href="http://{{l["ip"]}}:{{l["port"]}}{{l["path"]}}" target="_blank">{{l["display_name"]}}</a></div>
     {% endfor %}

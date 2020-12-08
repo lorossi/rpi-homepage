@@ -1,5 +1,5 @@
 @media screen and (max-width: 440px) {
-  #top {
+  .container#top {
     display: none;
   }
 
@@ -34,7 +34,7 @@
     padding: 4vh;
   }
 
-  #top {
+  .container#top {
     font-size: 1rem;
   }
 
@@ -46,7 +46,7 @@
     font-size: 2rem;
   }
 
-  #bottom {
+  .container#bottom {
     width: 90vw;
     left: 5vw;
   }
