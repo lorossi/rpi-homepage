@@ -1,3 +1,6 @@
+/* jshint esversion: 8 */
+
+// loads date into container
 function setDate(time_obj, date_obj) {
   let now = new Date();
 
@@ -23,52 +26,56 @@ function setDate(time_obj, date_obj) {
     day = '0' + day;
   }
 
-  let time_text = `${hours}:${minutes}`
+  let time_text = `${hours}:${minutes}`;
   if (time_text != $(time_obj).text()) {
     $(time_obj).text(time_text);
   }
 
-  let date_text = `${day}/${month}/${year}`
+  let date_text = `${day}/${month}/${year}`;
   if (date_text != $(date_obj).text()) {
     $(date_obj).text(date_text);
   }
 }
 
+// loads weather from backend and sets it into containers
 function setWeather(weather_obj) {
   $.ajax({
     type : 'POST',
     url : '/getweather/',
     complete : function(data) {
-      if (data.responseJSON["cod"] == 200) {
-        $(weather_obj + " #city").text(data.responseJSON["city"]);
-        $(weather_obj + " #temperature").text(data.responseJSON["temperature"]);
-        $(weather_obj + " #humidity").text(data.responseJSON["humidity"]);
-        $(weather_obj + " #description").text(data.responseJSON["description"]);
+      if (data.responseJSON.cod == 200) {
+        $(weather_obj + " #city").text(data.responseJSON.city);
+        $(weather_obj + " #temperature").text(data.responseJSON.temperature);
+        $(weather_obj + " #humidity").text(data.responseJSON.humidity);
+        $(weather_obj + " #description").text(data.responseJSON.description);
       }
     }
-  })
+  });
 }
 
-function getImage() {
+// loads background gradient
+function loadBackground() {
   $.ajax({
     type : 'POST',
-    url : '/getimage/',
+    url : '/getbackground/',
     complete : function(data) {
-      $("body").css({"background": data.responseJSON["gradient"]["string"], "color": data.responseJSON["color"]["text_color"]});
+      $("body").css({"background": data.responseJSON.gradient.string, "color": data.responseJSON.color.text_color});
     }
-  })
+  });
 }
 
-function setSpeed(speed_obj) {
+// loads speedtest
+function getSpeed(speed_obj) {
   $.ajax({
     type : 'POST',
     url : '/getspeed/',
     complete : function(data) {
-      $(speed_obj).text(data.responseJSON["string"]);
+      $(speed_obj).text(data.responseJSON.string);
     }
-  })
+  });
 }
 
+// loads data 
 function getData(data_obj) {
   $.ajax({
     type : 'POST',
@@ -76,10 +83,10 @@ function getData(data_obj) {
     complete : function(data) {
       for (let i = 0; i < data.responseJSON.length; i++){
         let obj = data.responseJSON[i];
-        $(data_obj).find(`[data="${obj['name']}"`).text(obj['string']);
+        $(data_obj).find(`[data="${obj.name}"`).text(obj.string);
       }
     }
-  })
+  });
 }
 
 
@@ -88,24 +95,24 @@ $(document).ready(function() {
   let date_obj = "#date";
   let weather_obj = ".weather";
   let data_obj = ".stats";
-  let speed_obj = "#speedtest .value"
+  let speed_obj = "#speedtest .value";
 
   setDate(time_obj, date_obj);
   setWeather(weather_obj);
-  setSpeed(speed_obj);
+  getSpeed(speed_obj);
 
 
   $(".stat, .weather").mouseenter(function() {
     $(this).find(".hidden").css({"display": "inline-block"});
-  })
+  });
 
   $(".stat, .weather").mouseleave(function() {
     $(this).find(".hidden").css({"display": "none"});
-  })
+  });
 
   setInterval(setDate, 2000, time_obj, date_obj); // 2 seconds
-  setInterval(getImage, 15 * 60 * 1000); // 15 minutes
+  setInterval(loadBackground, 15 * 60 * 1000); // 15 minutes
   setInterval(setWeather, 15 * 60 * 1000, weather_obj); // 15 minutes
-  setInterval(setSpeed, 15 * 60 * 1000, speed_obj); // 15 minutes
-  setInterval(getData, 30 * 1000, data_obj) // 30 seconds
-})
+  setInterval(getSpeed, 15 * 60 * 1000, speed_obj); // 15 minutes
+  setInterval(getData, 30 * 1000, data_obj); // 30 seconds
+});

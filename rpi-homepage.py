@@ -4,8 +4,8 @@ import subprocess
 import psutil
 import shutil
 import speedtest
-from random import sample, randint, seed, shuffle
-from flask import Flask, render_template, request, jsonify, url_for
+from random import randint, seed, shuffle
+from flask import Flask, render_template, request, jsonify
 
 
 # returns the best color combination to make a nice gradient
@@ -24,14 +24,13 @@ def getGradient(settings):
         attempt = colors_copy.pop(0)
         attempt_hue = calculateHue(attempt)
         angle_between = abs(attempt_hue - hue)
-        if  angle_between < 90 and angle_between > 20:
+        if angle_between < 90 and angle_between > 20:
             selected[1] = attempt
             found = True
         else:
             if len(colors_copy) == 0:
                 colors_copy = [c for c in colors]
                 shuffle(colors_copy)
-
 
     angle = randint(0, 360)
     average, brightness = averageColor(selected)
@@ -47,6 +46,7 @@ def getGradient(settings):
 
     return gradient
 
+
 # calculates average between two colors and its brightness
 def averageColor(colors):
     r = [int(c[1:3], 16) for c in colors]
@@ -57,7 +57,9 @@ def averageColor(colors):
     average.append((r[0] + r[1]) / 2)
     average.append((g[0] + g[1]) / 2)
     average.append((b[0] + b[1]) / 2)
-    brightness = (0.2126 * average[0] + 0.7152 * average[1] + 0.0722 * average[2])
+    brightness = (0.2126 * average[0] +
+                  0.7152 * average[1] +
+                  0.0722 * average[2])
 
     r_hex = []
     for a in average:
@@ -65,6 +67,7 @@ def averageColor(colors):
 
     average_color = "#" + "".join(r_hex).upper()
     return average_color, brightness
+
 
 # calculates the hue (angle) of a color
 def calculateHue(color):
@@ -86,10 +89,12 @@ def calculateHue(color):
     else:
         hue = 0
 
-    hue *= 60;
-    if (hue < 0): hue += 360
+    hue *= 60
+    if (hue < 0):
+        hue += 360
 
     return hue
+
 
 # selects text color and background_color according to the chosen color palette
 def returnColor(brightness, settings):
@@ -103,17 +108,20 @@ def returnColor(brightness, settings):
 
     return color
 
+
 # load ips and hostnames from Raspberry web interface
 def loadIps():
     # load all ips
     ips = {}
 
-    p = subprocess.Popen("hostname -I".split(" "), stdout=subprocess.PIPE).stdout.read()
+    p = subprocess.Popen("hostname -I".split(" "),
+                         stdout=subprocess.PIPE).stdout.read()
     rasp_ip = p.decode("utf-8").rstrip().split(" ")
     ips["lanip"] = rasp_ip[0]
 
     # load all networks and extract ip of the first one
-    p = subprocess.Popen("sudo zerotier-cli listnetworks".split(), stdout=subprocess.PIPE).stdout.read()
+    p = subprocess.Popen("sudo zerotier-cli listnetworks".split(),
+                         stdout=subprocess.PIPE).stdout.read()
     zerotier_ip = p.decode("utf-8").rstrip().split(" ")[-1].split("/")[-2]
     ips["zerotierip"] = zerotier_ip
 
@@ -124,6 +132,7 @@ def loadIps():
 
     return ips
 
+
 # loads links from file
 def loadLinks(request_ip, path="src/links.json"):
     with open(path) as json_file:
@@ -132,22 +141,25 @@ def loadLinks(request_ip, path="src/links.json"):
     ips = loadIps()
 
     if request_ip[:9] == "192.168.1":
-        for l in links:
-            l["ip"] = ips["lanip"] # lan
+        for link in links:
+            link["ip"] = ips["lanip"]  # lan
     else:
-        for l in links:
-            l["ip"] = ips["zerotierip"] # zerotier
+        for link in links:
+            link["ip"] = ips["zerotierip"]  # zerotier
     return links
+
 
 def loadSettings(path="src/settings.json"):
     with open(path) as json_file:
         settings = json.load(json_file)
     return settings
 
+
 def loadTranslations(lang, path="src/translations.json"):
     with open(path) as json_file:
         translations = json.load(json_file)
     return translations[lang]
+
 
 # get weather from OpenWeatherMap
 def getWeather(settings):
@@ -166,7 +178,7 @@ def getWeather(settings):
 
     if json_respose["cod"] != 200:
         weather = {
-            "cod" : json_respose["cod"]
+            "cod": json_respose["cod"]
         }
 
     else:
@@ -183,12 +195,14 @@ def getWeather(settings):
 
     return weather
 
+
 # load all relevant data from the Raspberry
 def loadData(settings):
     folder = settings["Interface"]["folder"]
     ips = loadIps()
 
-    raw_temperature = round(psutil.sensors_temperatures()['cpu_thermal'][0][1], 1)
+    raw_temperature = round(psutil.sensors_temperatures()['cpu_thermal'][0][1],
+                            1)
     raw_cpu = psutil.cpu_percent()
     raw_ram = psutil.virtual_memory()[2]
 
@@ -230,16 +244,15 @@ def loadData(settings):
             }
         )
 
-
     # if we found a zerotier ip, we want to add it to second last position
     if ips["zerotierip"]:
         data.insert(-1,
-            {
-                "name": "ip",
-                "string": ips["zerotierip"],
-                "hidden": "ip zerotier"
-            }
-        )
+                    {
+                        "name": "ip",
+                        "string": ips["zerotierip"],
+                        "hidden": "ip zerotier"
+                    }
+                    )
 
     if settings["Interface"]["lang"] != "it":
         translations = loadTranslations(settings["Interface"]["lang"])
@@ -253,13 +266,15 @@ def loadData(settings):
 
 # get cpu temperature
 def getTemperature():
-    raw_temperature = round(psutil.sensors_temperatures()['cpu_thermal'][0][1], 1)
+    raw_temperature = round(psutil.sensors_temperatures()['cpu_thermal'][0][1],
+                            1)
     temperature = {
         "raw": raw_temperature,
         "unit": "°C",
         "formatted": f"{raw_temperature}°C"
     }
     return temperature
+
 
 # get internet connection speed from speedtest
 def getSpeed():
@@ -276,7 +291,6 @@ def getSpeed():
     ping = int(res['ping'])
     string = f"{download}Mb/s {upload}Mb/s {ping}ms"
 
-
     speed = {
             "download": download,
             "upload": upload,
@@ -288,6 +302,8 @@ def getSpeed():
 
 
 app = Flask(__name__)
+
+
 @app.route('/')
 @app.route('/homepage')
 def index():
@@ -299,7 +315,7 @@ def index():
     links = loadLinks(request_ip)
     data = loadData(settings)
     return render_template('index.html', gradient=gradient,
-                            color=color, links=links, data=data)
+                           color=color, links=links, data=data)
 
 
 @app.route("/getweather/", methods=['POST'])
@@ -310,8 +326,8 @@ def get_weather():
     return jsonify(weather)
 
 
-@app.route("/getimage/", methods=['POST'])
-def get_image():
+@app.route("/getbackground/", methods=['POST'])
+def get_background():
     settings = loadSettings()
 
     gradient = getGradient(settings)
@@ -325,10 +341,12 @@ def get_speed():
     speedtest = getSpeed()
     return jsonify(speedtest)
 
+
 @app.route("/gettemperature/", methods=['GET'])
 def get_temperature():
     temperaure = getTemperature()
     return jsonify(temperaure)
+
 
 @app.route("/getdata/", methods=['POST'])
 def get_data():
@@ -345,5 +363,5 @@ if __name__ == '__main__':
             port=settings["Server"]["port"],
             debug=settings["Server"]["debug"])
 
-    psutil.cpu_percent() # needed because the first measurment is always wrong
-    seed() # random seeding
+    psutil.cpu_percent()  # needed because the first measurment is always wrong
+    seed()  # random seeding
