@@ -13,7 +13,7 @@ So this is how *rpi-homepage* born. It's a simple, quick, easy way to check some
 The webpage is completely scalable, I tested it on many devices and screen resolutions. Hover your mouse pointer on data to view what it represents!
 
 ## Code structure
-This whole backend is coded in Python using Flask. The frontend works on JQuery and communicates with the backend via Ajax
+This whole backend is coded in Python using Flask. The frontend works on JQuery and communicates with the backend via Ajax.
 
 ## How it works
 Each time the wepage is requested, the backend queries the Raspberry for some internal stats (internal temperature, cpu and ram load, free space on the external HDD, hostname, LAN IP and ZeroTier ip) and loads it in the browser. Sequentially it connects to [OpenWeatherMap](https://openweathermap.org/) to get local weather forecast and generates a background picking colors from a list.
