@@ -1,6 +1,6 @@
 @font-face {
-  font-family: Roboto-Regular;
-  src: url('Roboto-Regular.ttf');
+  font-family: Roboto-Light;
+  src: url('Roboto-Light.ttf');
 }
 
 html {
@@ -10,11 +10,73 @@ html {
 body {
   overflow: hidden;
   margin: 0;
-  font-family: Roboto-Regular;
+  font-family: Roboto-Light;
 }
 
 body * {
   padding: 0;
   margin: 0;
   z-index: 50;
+}
+
+a {
+  color: inherit;
+}
+
+.page {
+  position: absolute;
+  display: inline-block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.top {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+
+  padding-top: var(--text-size);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+
+  padding-bottom: var(--text-size);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.datetime {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  text-align: center;
+}
+
+#date {
+  font-size: var(--subtitle-size);
+}
+
+#time  {
+  font-size: var(--title-size);
+}
+
+.links {
+  font-size: var(--text-size);
+  list-style-type: none;
+}
+
+.links li {
+  padding-top: calc(var(--text-size)/2);
 }

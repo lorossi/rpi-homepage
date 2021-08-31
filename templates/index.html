@@ -4,9 +4,27 @@
 RPi 4 Homepage
 {% endblock title %}
 
-{% block links %}
-{% for link in links %}
-<li><a href="{{link.href}}">{{link.name}}</li></a>
-{% endfor %}
+{% block head %}
+<script src="{{ url_for('static', filename='js/main.js')}}"></script>
+{% endblock head %}
 
-{% endblock links %}
+{% block body %}
+<div class="page">
+
+  <div class="top">
+    <div class="datetime">
+      <div id="date"></div>
+      <div id="time"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <ul class="links">
+      {% for link in links %}
+      <li><a href="{{link.href}}">{{link.name}}</li></a>
+      {% endfor %}
+    </ul>
+  </div>
+
+</div>
+{% endblock body %}

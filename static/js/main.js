@@ -2,11 +2,11 @@
 const setDate = () => {
   const now = new Date();
   // pad time and date
-  const hours = now.getHours().padStart(2);
-  const minutes = now.getMinutes().padStart(2);
-  const year = now.getFullYear().padStart(2);
-  const month = (now.getMonth() + 1).padStart(2);
-  const day = now.getDate().padStart(2);
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const year = now.getFullYear().toString().padStart(2, '0');
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const day = now.getDate().toString().padStart(2, '0');
 
   // format hour and update if different
   const time_text = `${hours}:${minutes}`;
@@ -59,10 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
   setDate();
   //setWeather(weather_obj);
 
+  /*
   const stat_container = document.querySelector(".stat, .weather");
   stat_container.onmouseover(e => {
     // TODO TOGGLE VISIBILITY ON ENTER/EXIT
   });
+  */
 
-  setInterval(setDate, 2000, time_obj, date_obj); // 2 seconds
+  setInterval(setDate, 2000); // 2 seconds
 });
