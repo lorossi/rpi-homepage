@@ -11,7 +11,7 @@ body {
   overflow: hidden;
   margin: 0;
   font-family: Roboto-Thin;
-  color: #ebebeb;
+  color: var(--text-color);
 }
 
 body * {
@@ -71,6 +71,7 @@ a {
   justify-content: center;
 
   text-align: center;
+  user-select: none;
 }
 
 #time {
@@ -84,6 +85,7 @@ a {
 .weather {
   font-size: var(--text-size);
   list-style-type: none;
+  user-select: none;
 }
 
 .weather li {
@@ -97,4 +99,24 @@ a {
 
 .links li {
   padding-top: calc(var(--text-size) / 2);
+}
+
+.links a {
+  text-decoration: none;
+  position: relative;
+}
+
+.links a::after {
+  content: "";
+  position: absolute;
+  bottom: calc(- var(--text-size) / 24);
+  width: 102%;
+  left: -1%;
+  height: calc(var(--text-size) / 32);
+  background: var(--text-color);
+  display: block;
+}
+
+.links a:hover {
+  filter: invert(1)
 }

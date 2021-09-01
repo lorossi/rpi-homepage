@@ -1,3 +1,7 @@
+:root {
+  --text-color: #ebebeb;
+}
+
 @media only screen and (max-width: 599px) {
   :root {
     --title-size: 3rem;
