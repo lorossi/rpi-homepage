@@ -5,7 +5,7 @@
 @media only screen and (max-width: 599px) {
   :root {
     --title-size: 3rem;
-    --subtitle-size: 2rem;
+    --subtitle-size: 1.5rem;
     --text-size: 1.5rem;
   }
 }
@@ -14,6 +14,6 @@
   :root {
     --title-size: 6rem;
     --subtitle-size: 3rem;
-    --text-size: 2.5rem;
+    --text-size: 4rem;
   }
 }
