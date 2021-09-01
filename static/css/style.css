@@ -94,11 +94,12 @@ a {
 
 .links {
   font-size: var(--text-size);
-  list-style-type: none;
-}
-
-.links li {
-  padding-top: calc(var(--text-size) / 2);
+  display: grid;
+  grid-auto-flow: row dense;
+  grid-auto-columns: 100%;
+  row-gap: calc(var(--text-size) / 4);
+  justify-items: center;
+  align-items: center;
 }
 
 .links a {

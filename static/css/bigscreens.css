@@ -1,5 +1,6 @@
 @media only screen and (min-width: 600px) {
-  .links li {
-    padding-top: calc(var(--text-size) / 4);
+.links {
+    grid-auto-rows: auto;
+    max-width: 50vw;
   }
 }

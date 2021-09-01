@@ -37,11 +37,11 @@ body {
   </div>
 
   <div class="bottom">
-    <ul class="links">
+    <div class="links">
       {% for link in links %}
-      <li><a href="{{link.href}}">{{link.name}}</li></a>
+      <div class=line><a href="{{link.href}}">{{link.name}}</a></div>
       {% endfor %}
-    </ul>
+    </div>
   </div>
 
 </div>
