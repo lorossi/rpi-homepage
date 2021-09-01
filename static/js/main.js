@@ -25,9 +25,8 @@ const setDate = () => {
 // loads weather from backend and sets it into containers
 const setWeather = async () => {
   const weather = await makeRequest("/get/weather");
-  console.log(weather)
 
-  if (weather) {
+  if (weather && weather.cod == 200) {
     document.querySelector("#city").textContent = weather.city;
     document.querySelector("#temperature-humidity").textContent = `${weather.temperature} - ${weather.humidity}`;
     document.querySelector("#description").textContent = weather.description;
