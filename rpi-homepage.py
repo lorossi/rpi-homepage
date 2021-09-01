@@ -2,6 +2,7 @@
 import ujson
 import requests
 
+from random import choice, randint
 from flask import Flask, render_template, jsonify, request
 
 
@@ -21,6 +22,19 @@ def loadLinks(base_ip, path="static/src/links.json"):
             "href": f"http://{base_ip}:{link['port']}/{link.get('path', '')}",
             "name": link["display_name"],
             } for link in links]
+
+
+def loadColors(path="static/src/colors.json"):
+    with open(path, "r") as f:
+        return ujson.load(f)
+
+
+def getGradient():
+    colors = loadColors()
+    from_c, to_c = choice(colors)
+    angle = randint(0, 360)
+
+    return f"linear-gradient({angle}deg, {from_c}, {to_c});"
 
 
 def getWeather():
@@ -73,7 +87,9 @@ def index():
 
     links = loadLinks(base_ip)
 
-    return render_template("index.html", links=links)
+    gradient = getGradient()
+
+    return render_template("index.html", links=links, gradient=gradient)
 
 
 @app.route("/get/weather/", methods=["GET"])
