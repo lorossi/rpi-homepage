@@ -2,6 +2,7 @@
 import ujson
 import requests
 
+from datetime import datetime
 from random import choice, randint
 from flask import Flask, render_template, jsonify, request
 
@@ -104,6 +105,26 @@ def index():
 def get_weather():
     # weather endpoint
     return jsonify(getWeather())
+
+
+@app.route("/get/greetings/", methods=["GET"])
+def get_greetings():
+    settings = loadSettings()
+    hour = datetime.now().hour
+
+    if hour <= 4:
+        greeting = settings["Server"]["greetings"]["night"]
+    elif hour <= 12:
+        greeting = settings["Server"]["greetings"]["morning"]
+    elif hour <= 18:
+        greeting = settings["Server"]["greetings"]["afternoon"]
+    else:
+        greeting = settings["Server"]["greetings"]["evening"]
+
+    # weather endpoint
+    return jsonify({
+        "message": greeting,
+    })
 
 
 if __name__ == "__main__":
