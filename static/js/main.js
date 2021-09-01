@@ -20,6 +20,8 @@ const setDate = () => {
   const date_obj = document.querySelector("#date");
   if (date_text != date_obj.textContent)
     date_obj.textContent = date_text;
+
+    setInterval(setDate, 1000); // 1 second
 };
 
 // loads weather from backend and sets it into containers
@@ -31,6 +33,8 @@ const setWeather = async () => {
     document.querySelector("#temperature-humidity").textContent = `${weather.temperature} - ${weather.humidity}`;
     document.querySelector("#description").textContent = weather.description;
   }
+
+  setInterval(setWeather, 1000 * 60 * 5); // 5 minutes
 };
 
 const makeRequest = (url, method = "GET") => {
@@ -46,5 +50,4 @@ const makeRequest = (url, method = "GET") => {
 document.addEventListener("DOMContentLoaded", () => {
   setDate();
   setWeather();
-  setInterval(setDate, 1000); // 1 second
 });
