@@ -3,8 +3,8 @@
     "host": "HOST IP",
     "port": HOST PORT,
     "debug": true,
-    "zerotier_ip": "ZEROTIER IP - can be omitted",
-    "lan_ip": "LAN IP",
+    "zerotier-ip": "ZEROTIER IP - can be omitted",
+    "lan-ip": "LAN IP",
   },
   "OpenWeatherMap": {
     "api_key": "API KEY",
