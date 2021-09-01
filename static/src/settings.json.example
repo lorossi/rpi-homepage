@@ -9,6 +9,6 @@
   "OpenWeatherMap": {
     "api_key": "API KEY",
     "city": "YOUR CITY",
-    "lang": "YOUR LANGUAGE"
+    "language": "YOUR LANGUAGE - example: en, it"
   }
 }

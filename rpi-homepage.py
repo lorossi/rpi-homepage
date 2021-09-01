@@ -49,26 +49,27 @@ def getWeather():
     settings = loadSettings()
     api_key = settings["OpenWeatherMap"]["api_key"]
     city = settings["OpenWeatherMap"]["city"]
-    lang = settings["OpenWeatherMap"]["lang"]
+    language = settings["OpenWeatherMap"].get("language", "it")
     # pack the url
     request_url = (
         f"http://api.openweathermap.org/data/2.5/weather?"
         f"q={city}&appid={api_key}"
-        f"&units=metric&lang={lang}"
+        f"&units=metric&lang={language}"
     )
     # make the request
-    json_respose = requests.get(request_url).json()
+    json_response = requests.get(request_url).json()
+    print(json_response)
 
-    if json_respose["cod"] != 200:
+    if json_response["cod"] != 200:
         # negative response, just return the error code
         return {
-            "cod": json_respose["cod"],
+            "cod": json_response["cod"],
         }
 
     # otherwise return an hefty dict
-    temp = json_respose["main"]["temp"]
-    hum = json_respose["main"]["humidity"]
-    description = json_respose["weather"][0]["description"]
+    temp = json_response["main"]["temp"]
+    hum = json_response["main"]["humidity"]
+    description = json_response["weather"][0]["description"]
     return {
         "cod": 200,
         "city": city.lower(),
@@ -102,6 +103,7 @@ def index():
 
 @app.route("/get/weather/", methods=["GET"])
 def get_weather():
+    print(getWeather())
     # weather endpoint
     return jsonify(getWeather())
 
