@@ -25,16 +25,18 @@ a {
 
 .page {
   position: absolute;
-  display: inline-block;
+  top: 0;
+  left: 0;
+
   width: 100vw;
   height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .top {
-  position: absolute;
-  top: 0;
-  width: 100vw;
-
   padding-top: var(--text-size);
 
   display: flex;
@@ -42,11 +44,17 @@ a {
   justify-content: center;
 }
 
-.bottom {
-  position: absolute;
-  bottom: 0;
-  width: 100vw;
+.center {
+  padding-top: var(--text-size);
 
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  text-align: center; 
+}
+
+.bottom {
   padding-bottom: var(--text-size);
 
   display: flex;
@@ -56,7 +64,7 @@ a {
   text-align: center;
 }
 
-.datetime {
+.stats {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -64,12 +72,21 @@ a {
   text-align: center;
 }
 
-#date {
-  font-size: var(--subtitle-size);
-}
-
 #time  {
   font-size: var(--title-size);
+}
+
+#date {
+  font-size: var(--text-size);
+}
+
+.weather {
+  font-size: var(--text-size);
+  list-style-type: none;
+}
+
+.weather li {
+  list-style-type: none;
 }
 
 .links {

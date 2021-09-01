@@ -1,5 +1,7 @@
 
 import ujson
+import requests
+
 from flask import Flask, render_template, jsonify, request
 
 
@@ -22,11 +24,41 @@ def loadLinks(base_ip, path="static/src/links.json"):
 
 
 def getWeather():
-    return None
+    # load parameters from file
+    settings = loadSettings()
+    api_key = settings["OpenWeatherMap"]["api_key"]
+    city = settings["OpenWeatherMap"]["city"]
+    lang = settings["OpenWeatherMap"]["lang"]
+    # pack the url
+    request_url = (
+        f"http://api.openweathermap.org/data/2.5/weather?"
+        f"q={city}&appid={api_key}"
+        f"&units=metric&lang={lang}"
+    )
+    # make the request
+    json_respose = requests.get(request_url).json()
+
+    if json_respose["cod"] != 200:
+        # negative response, just return the error code
+        return {
+            "cod": json_respose["cod"],
+        }
+
+    # otherwise return an hefty dict
+    temp = json_respose["main"]["temp"]
+    hum = json_respose["main"]["humidity"]
+    description = json_respose["weather"][0]["description"]
+    return {
+        "cod": 200,
+        "city": city.lower(),
+        "temperature": f"{temp}°C",
+        "humidity": f"{hum}%",
+        "description": description,
+    }
 
 
-@app.route('/')
-@app.route('/homepage')
+@app.route("/")
+@app.route("/homepage")
 def index():
     settings = loadSettings()
 
@@ -44,14 +76,13 @@ def index():
     return render_template("index.html", links=links)
 
 
-@app.route("/getweather/", methods=['POST'])
+@app.route("/get/weather/", methods=["GET"])
 def get_weather():
-    settings = loadSettings()
-    weather = getWeather(settings)
+    weather = getWeather()
     return jsonify(weather)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     settings = loadSettings()
     app.run(host=settings["Server"]["host"],
             port=settings["Server"]["port"],
