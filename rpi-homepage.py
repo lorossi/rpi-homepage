@@ -92,7 +92,7 @@ def index():
     elif ip[:3] == "192":
         base_ip = settings["Server"].get("lan_ip")
     else:
-        base_ip = settings["Server"].get("lan_ip")
+        base_ip = settings["Server"].get("zerotier-ip")
 
     links = loadLinks(base_ip)
     # get a gradient
