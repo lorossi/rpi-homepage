@@ -58,7 +58,6 @@ def getWeather():
     )
     # make the request
     json_response = requests.get(request_url).json()
-    print(json_response)
 
     if json_response["cod"] != 200:
         # negative response, just return the error code
@@ -103,7 +102,6 @@ def index():
 
 @app.route("/get/weather/", methods=["GET"])
 def get_weather():
-    print(getWeather())
     # weather endpoint
     return jsonify(getWeather())
 
