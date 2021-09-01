@@ -78,7 +78,7 @@ a {
 }
 
 #date {
-  font-size: var(--text-size);
+  font-size: var(--subtitle-size);
 }
 
 .weather {
@@ -96,5 +96,5 @@ a {
 }
 
 .links li {
-  padding-top: calc(var(--text-size)/2);
+  padding-top: calc(var(--text-size) / 2);
 }
