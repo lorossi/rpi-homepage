@@ -90,7 +90,7 @@ def index():
     if ip[:3] == "127":
         base_ip = "127.0.0.1"
     elif ip[:3] == "192":
-        base_ip = settings["Server"].get("lan_ip")
+        base_ip = settings["Server"].get("lan-ip")
     else:
         base_ip = settings["Server"].get("zerotier-ip")
 
