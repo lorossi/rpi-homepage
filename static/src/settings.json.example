@@ -1,21 +1,14 @@
 {
   "Server": {
     "host": "HOST IP",
-    "port": PORT,
-    "debug": true/false
+    "port": HOST PORT,
+    "debug": true,
+    "zerotier_ip": "ZEROTIER IP - can be omitted",
+    "lan_ip": "LAN IP",
   },
-  "OpenWeatherMap" : {
-    "api_key": "OpenWeatherMap API KEY",
-    "city": "CITY"
-  },
-  "Interface" : {
-    "colors": ["#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#16A085", "#27AE60", "#2980B9", "#8E44AD", "#F1C40F", "#E67E22", "#E74C3C", "#F39C12", "#D35400", "#C0392B"],
-    "text_colors": {
-      "light": "#E4E4E4",
-      "dark": "#1B1B1B"
-    },
-    "threshold_brightness": 140,
-    "folder": "DRIVE YOU WANT TO KNOW THE FREE SPACE OF",
-    "lang": "ISO 639-1 code"
+  "OpenWeatherMap": {
+    "api_key": "API KEY",
+    "city": "YOUR CITY",
+    "lang": "YOUR LANGUAGE"
   }
 }

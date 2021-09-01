@@ -3,12 +3,12 @@
     "display_name": "SHOWN NAME",
     "name": "SERVICE NAME",
     "port": SERVICE PORT,
-    "path": "SERVICE PATH"
+    "path": "SERVICE PATH - can be omitted"
   },
   {
     "display_name": "SHOWN NAME",
     "name": "SERVICE NAME",
     "port": SERVICE PORT,
-    "path": "SERVICE PATH"
+    "path": "SERVICE PATH - can be omitted"
   }
 ]

@@ -43,33 +43,9 @@ const makeRequest = (url, method = "GET") => {
 };
 
 
-// loads data 
-function getData(data_obj) {
-  /*
-  $.ajax({
-    type: "POST",
-    url: "/getdata/",
-    complete: function (data) {
-      for (let i = 0; i < data.responseJSON.length; i++) {
-        let obj = data.responseJSON[i];
-        $(data_obj).find(`[data="${obj.name}"`).text(obj.string);
-      }
-    }
-  });
-  */
-}
-
 
 document.addEventListener("DOMContentLoaded", () => {
   setDate();
   setWeather();
-
-  /*
-  const stat_container = document.querySelector(".stat, .weather");
-  stat_container.onmouseover(e => {
-    // TODO TOGGLE VISIBILITY ON ENTER/EXIT
-  });
-  */
-
   setInterval(setDate, 1000); // 1 second
 });
