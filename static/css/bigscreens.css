@@ -1,6 +1,17 @@
 @media only screen and (min-width: 600px) {
-.links {
-    grid-auto-rows: auto;
-    max-width: 50vw;
+  .links {
+    grid-template-columns: repeat(2, 1fr);
+    font-size: var(--text-size);
+    column-gap: var(--text-size);
+    max-width: 80vw;
   }
+
+  .links div:nth-of-type(2n+1) {
+    text-align: right;
+  }
+
+  .links div:nth-of-type(2n) {
+    text-align: left;
+  }
+
 }

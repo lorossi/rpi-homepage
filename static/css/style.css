@@ -83,7 +83,7 @@ a {
 }
 
 .weather {
-  font-size: var(--text-size);
+  font-size: var(--subtitle-size);
   list-style-type: none;
   user-select: none;
 }
@@ -95,11 +95,9 @@ a {
 .links {
   font-size: var(--text-size);
   display: grid;
-  grid-auto-flow: row dense;
-  grid-auto-columns: 100%;
+
+  grid-template-columns: 1fr;
   row-gap: calc(var(--text-size) / 4);
-  justify-items: center;
-  align-items: center;
 }
 
 .links a {
