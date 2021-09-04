@@ -1,4 +1,4 @@
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 1000px) {
   .links {
     grid-template-columns: repeat(2, 1fr);
     font-size: var(--text-size);
@@ -13,5 +13,4 @@
   .links div:nth-of-type(2n) {
     text-align: left;
   }
-
 }
