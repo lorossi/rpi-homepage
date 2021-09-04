@@ -75,10 +75,9 @@ const is_mobile = () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-
   setDate();
   setWeather();
   setGreeting();
 
-  document.addEventListener("click", () => {if (is_mobile()) goFullScreen()});
+  document.addEventListener("click", () => {if (is_mobile()) goFullScreen();});
 });
