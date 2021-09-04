@@ -79,7 +79,7 @@ def getWeather():
     return {
         "cod": 200,
         "city": city.lower(),
-        "temperature": f"{temp}°C",
+        "temperature": f"{round(temp, 1)}°C",
         "humidity": f"{hum}%",
         "description": description,
     }
