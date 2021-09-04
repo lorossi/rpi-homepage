@@ -21,7 +21,7 @@ const setDate = () => {
   if (date_text != date_obj.textContent)
     date_obj.textContent = date_text;
 
-  setInterval(setDate, 1000); // 1 second
+  setTimeout(setDate, 1000); // 1 second
 };
 
 // loads weather from backend and sets it into containers
@@ -35,7 +35,7 @@ const setWeather = async () => {
     document.querySelector("#description").textContent = weather.description;
   }
 
-  setInterval(setWeather, 1000 * 60 * 5); // 5 minutes
+  setTimeout(setWeather, 1000 * 60 * 5); // 5 minutes
 };
 
 // loads greeting into container
@@ -47,7 +47,7 @@ const setGreeting = async () => {
     document.querySelector("#greeting").textContent = greeting.message;
   }
 
-  setInterval(setGreeting, 1000 * 60 * 5); // 5 minutes
+  setTimeout(setGreeting, 1000 * 60 * 5); // 5 minutes
 };
 
 // makes a request to an url
@@ -60,7 +60,7 @@ const makeRequest = async (url, method = "GET") => {
 };
 
 // activates browser fullscreen mode
-const goFullScreen = () => {
+const go_full_screen = () => {
   const doc = window.document;
   const docEl = doc.documentElement;
   // these calls are browser specific
@@ -79,5 +79,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setWeather();
   setGreeting();
 
-  document.addEventListener("click", () => {if (is_mobile()) goFullScreen();});
+  document.addEventListener("click", () => {if (is_mobile()) go_full_screen();});
 });
