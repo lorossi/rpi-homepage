@@ -50,7 +50,8 @@ const setGreeting = async () => {
   setInterval(setGreeting, 1000 * 60 * 5); // 5 minutes
 };
 
-const makeRequest = (url, method = "GET") => {
+// makes a request to an url
+const makeRequest = async (url, method = "GET") => {
   const options = {
     method,
   };
@@ -58,10 +59,26 @@ const makeRequest = (url, method = "GET") => {
   return fetch(url, options).then(response => response.json()).catch(() => null);
 };
 
+// activates browser fullscreen mode
+const goFullScreen = () => {
+  const doc = window.document;
+  const docEl = doc.documentElement;
+  // these calls are browser specific
+  const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+  requestFullScreen.call(docEl);
+};
+
+// returns true if the function is called by a mobile browser
+const is_mobile = () => {
+  return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+};
 
 
 document.addEventListener("DOMContentLoaded", () => {
+
   setDate();
   setWeather();
   setGreeting();
+
+  document.addEventListener("click", () => {if (is_mobile()) goFullScreen()});
 });
