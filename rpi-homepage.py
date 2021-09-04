@@ -1,5 +1,6 @@
 
 import ujson
+import logging
 import requests
 
 from datetime import datetime
@@ -12,12 +13,14 @@ app = Flask(__name__)
 
 def loadSettings(path="static/src/settings.json"):
     """ simply loads settings """
+    logging.info("Loading settings")
     with open(path, "r") as f:
         return ujson.load(f)
 
 
 def loadLinks(base_ip, path="static/src/links.json"):
     """ loads and returns list of formatted links from file"""
+    logging.info("Loading links")
     with open(path, "r") as f:
         links = ujson.load(f)
 
@@ -29,12 +32,14 @@ def loadLinks(base_ip, path="static/src/links.json"):
 
 def loadColors(path="static/src/colors.json"):
     """ simply loads colors """
+    logging.info("Loading colors")
     with open(path, "r") as f:
         return ujson.load(f)
 
 
 def getGradient():
     """ creates a css gradient with rotation """
+    logging.info("getting a gradient")
     colors = loadColors()
     # pick two colors
     from_c, to_c = choice(colors)
@@ -46,6 +51,7 @@ def getGradient():
 
 def getWeather():
     """ loads weather from  OpenWeatherMap """
+    logging.info("Getting weather")
     # load parameters from file
     settings = loadSettings()
     api_key = settings["OpenWeatherMap"]["api_key"]
@@ -82,9 +88,10 @@ def getWeather():
 @app.route("/")
 @app.route("/homepage")
 def index():
-    settings = loadSettings()
     # load request ip
     ip = request.remote_addr
+    logging.info(f"Serving homepage to {ip}")
+    settings = loadSettings()
     # format links according to request
     # (either local, from lan or from zerotier)
     if ip[:3] == "127":
@@ -103,12 +110,18 @@ def index():
 
 @app.route("/get/weather/", methods=["GET"])
 def get_weather():
+    # load request ip
+    ip = request.remote_addr
+    logging.info(f"Serving weather to {ip}")
     # weather endpoint
     return jsonify(getWeather())
 
 
 @app.route("/get/greetings/", methods=["GET"])
 def get_greetings():
+    ip = request.remote_addr
+    logging.info(f"Serving greetings to {ip}")
+
     settings = loadSettings()
     hour = datetime.now().hour
 
@@ -128,6 +141,15 @@ def get_greetings():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        filename=__file__.replace(".py", ".log"),
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+        filemode="w"
+    )
+
+    logging.info("Script started")
+
     settings = loadSettings()
     app.run(host=settings["Server"]["host"],
             port=settings["Server"]["port"],
