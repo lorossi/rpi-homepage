@@ -1,4 +1,3 @@
-
 import ujson
 import logging
 import requests
@@ -11,35 +10,66 @@ from flask import Flask, render_template, jsonify, request
 app = Flask(__name__)
 
 
-def loadSettings(path="static/src/settings.json"):
-    """ simply loads settings """
+def loadSettings(path: str = "static/src/settings.json") -> dict:
+    """Load settings from file.
+
+    Args:
+        path (str, optional): Settings file path. Defaults to "static/src/settings.json".
+
+    Returns:
+        dict: Settings dictionary
+    """
     logging.info("Loading settings")
     with open(path, "r") as f:
         return ujson.load(f)
 
 
-def loadLinks(base_ip, path="static/src/links.json"):
-    """ loads and returns list of formatted links from file"""
+def loadLinks(
+    base_ip: str = "192.168.1.1", path: str = "static/src/links.json"
+) -> dict:
+    """Loads links from settings file.
+
+    Args:
+        base_ip (str): Base ip (either local or zerotier ip)
+        path (str, optional): Path of links file. Defaults to "static/src/links.json".
+
+    Returns:
+        dict: [description]
+    """
     logging.info("Loading links")
     with open(path, "r") as f:
         links = ujson.load(f)
 
-    return [{
+    return [
+        {
             "href": f"http://{base_ip}:{link['port']}/{link.get('path', '')}",
             "name": link["display_name"],
-            } for link in links]
+        }
+        for link in links
+    ]
 
 
-def loadColors(path="static/src/colors.json"):
-    """ simply loads colors """
+def loadColors(path: str = "static/src/colors.json") -> dict:
+    """Loads colors from file.
+
+    Args:
+        path (str, optional): Colors file path. Defaults to "static/src/colors.json".
+
+    Returns:
+        dict
+    """
     logging.info("Loading colors")
     with open(path, "r") as f:
         return ujson.load(f)
 
 
-def getGradient():
-    """ creates a css gradient with rotation """
-    logging.info("getting a gradient")
+def getGradient() -> str:
+    """Creates a css gradient string
+
+    Returns:
+        str
+    """
+    logging.info("Getting a gradient")
     colors = loadColors()
     # pick two colors
     from_c, to_c = choice(colors)
@@ -49,8 +79,12 @@ def getGradient():
     return f"linear-gradient({angle}deg, {from_c}, {to_c});"
 
 
-def getWeather():
-    """ loads weather from  OpenWeatherMap """
+def getWeather() -> str:
+    """Loads weather from OpenWeatherMap
+
+    Returns:
+        str
+    """
     logging.info("Getting weather")
     # load parameters from file
     settings = loadSettings()
@@ -87,7 +121,12 @@ def getWeather():
 
 @app.route("/")
 @app.route("/homepage")
-def index():
+def index() -> render_template:
+    """Renders homepage
+
+    Returns:
+        render_template
+    """
     # load request ip
     ip = request.remote_addr
     logging.info(f"Serving homepage to {ip}")
@@ -101,7 +140,7 @@ def index():
     else:
         base_ip = settings["Server"].get("zerotier-ip")
 
-    links = loadLinks(base_ip)
+    links = loadLinks(base_ip=base_ip)
     # get a gradient
     gradient = getGradient()
     # return all to main template
@@ -109,7 +148,12 @@ def index():
 
 
 @app.route("/get/weather/", methods=["GET"])
-def get_weather():
+def get_weather() -> str:
+    """Weather endpoint
+
+    Returns:
+        str
+    """
     # load request ip
     ip = request.remote_addr
     logging.info(f"Serving weather to {ip}")
@@ -118,7 +162,12 @@ def get_weather():
 
 
 @app.route("/get/greetings/", methods=["GET"])
-def get_greetings():
+def get_greetings() -> str:
+    """Greetings endpoint
+
+    Returns:
+        str
+    """
     ip = request.remote_addr
     logging.info(f"Serving greetings to {ip}")
 
@@ -135,22 +184,30 @@ def get_greetings():
         greeting = settings["Server"]["greetings"]["evening"]
 
     # weather endpoint
-    return jsonify({
-        "message": greeting,
-    })
+    return jsonify(
+        {
+            "message": greeting,
+        }
+    )
 
 
-if __name__ == "__main__":
+def main():
     logging.basicConfig(
         filename=__file__.replace(".py", ".log"),
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(message)s",
-        filemode="w"
+        filemode="w",
     )
 
     logging.info("Script started")
 
     settings = loadSettings()
-    app.run(host=settings["Server"]["host"],
-            port=settings["Server"]["port"],
-            debug=settings["Server"]["debug"])
+    app.run(
+        host=settings["Server"]["host"],
+        port=settings["Server"]["port"],
+        debug=settings["Server"]["debug"],
+    )
+
+
+if __name__ == "__main__":
+    main()
