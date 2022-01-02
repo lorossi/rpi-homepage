@@ -6,19 +6,25 @@ A flask based dashboard for my RaspberryPi
 
 Since I bought a RaspberryPi 4, I started installing a lot of services, to the point it's hard to remember every web interface IP.
 
-As many do, I quickly installed Plex, PiHole, Transmission, Jellyfin, ZeroTier... and things got messy. I could never remember how to connect to each service configuration panel.
+As many do, I quickly installed Plex, PiHole, Transmission, Jellyfin, ZeroTier... and things got messy.
+I could never remember how to connect to each service configuration panel.
 
 So this is how _rpi-homepage_ was born. It's a simple, quick, easy way to connect to some important service and why not, get local time and weather in a clean looking, minimal, interface.
 
-The webpage is completely scalable, I tested it on many devices and screen resolutions.
+The webpage is completely scalable as I have tested it on many devices and screen resolutions.
 
 ## Code structure
 
-This whole backend is coded in Python using Flask. The frontend works on vanilla JS. Previously it used jQuery but I decided to get rid of it because it looks useless, nowadays.
+This whole backend is coded in Python using Flask.
+
+The frontend works on vanilla JS.
+Previously it used jQuery but I decided to get rid of it because it looks useless, nowadays.
+
+The weather is fetched from [OpenWeatherMap.com](https://openweathermap.org/) since it's free and fairly correct and reliable.
 
 ## Translations
 
-The code support multi language translations for items descriptions and weather forecast.
+The code support multi language for weather forecast.
 
 The base code is in Italian. In order to set the interface into a foreign (well, for me at least) language, you have to change the parameter inside _settings.json_ file.
 
