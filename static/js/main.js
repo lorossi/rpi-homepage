@@ -12,14 +12,12 @@ const setDate = () => {
   // format hour and update if different
   const time_text = `${hours}:${minutes}:${seconds}`;
   const time_obj = document.querySelector("#time");
-  if (time_text != time_obj.textContent)
-    time_obj.textContent = time_text;
+  if (time_text != time_obj.textContent) time_obj.textContent = time_text;
 
   // format date and update if different
   const date_text = `${days}/${months}/${years}`;
   const date_obj = document.querySelector("#date");
-  if (date_text != date_obj.textContent)
-    date_obj.textContent = date_text;
+  if (date_text != date_obj.textContent) date_obj.textContent = date_text;
 
   setTimeout(setDate, 1000); // 1 second
 };
@@ -31,7 +29,9 @@ const setWeather = async () => {
   // place into page
   if (weather && weather.cod == 200) {
     document.querySelector("#city").textContent = weather.city;
-    document.querySelector("#temperature-humidity").textContent = `${weather.temperature} - ${weather.humidity}`;
+    document.querySelector(
+      "#temperature-humidity"
+    ).textContent = `${weather.temperature} - ${weather.humidity}`;
     document.querySelector("#description").textContent = weather.description;
   }
 
@@ -56,28 +56,13 @@ const makeRequest = async (url, method = "GET") => {
     method,
   };
 
-  return fetch(url, options).then(response => response.json()).catch(() => null);
+  return fetch(url, options)
+    .then((response) => response.json())
+    .catch(() => null);
 };
-
-// activates browser fullscreen mode
-const go_full_screen = () => {
-  const doc = window.document;
-  const docEl = doc.documentElement;
-  // these calls are browser specific
-  const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-  requestFullScreen.call(docEl);
-};
-
-// returns true if the function is called by a mobile browser
-const is_mobile = () => {
-  return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-};
-
 
 document.addEventListener("DOMContentLoaded", () => {
   setDate();
   setWeather();
   setGreeting();
-
-  document.addEventListener("click", () => {if (is_mobile()) go_full_screen();});
 });
