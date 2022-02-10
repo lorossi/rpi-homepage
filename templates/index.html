@@ -1,24 +1,14 @@
-{% extends "base.html" %}
-
-{% block title %}
-RPi 4 Homepage
-{% endblock title %}
-
+{% extends "base.html" %} {% block title %} RPi 4 Homepage {% endblock title %}
 {% block head %}
 <script src="{{ url_for('static', filename='js/main.js')}}"></script>
 {% if gradient %}
 <style type="text/css">
-body {
-  background: {{gradient}};
-}
+  body {
+    background: {{gradient}};
+  }
 </style>
-{% endif %}
-
-{% endblock head %}
-
-{% block body %}
+{% endif %} {% endblock head %} {% block body %}
 <div class="page">
-
   <div class="top">
     <div class="stats">
       <div id="greeting"></div>
@@ -40,10 +30,13 @@ body {
   <div class="bottom">
     <div class="links">
       {% for link in links %}
-      <div class=line><a href="{{link.href}}">{{link.name}}</a></div>
+      <div class="link">
+        <div class="divisor"></div>
+        <a href="{{link.href}}">{{link.name}}</a>
+      </div>
+
       {% endfor %}
     </div>
   </div>
-
 </div>
 {% endblock body %}

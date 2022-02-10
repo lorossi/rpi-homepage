@@ -1,6 +1,6 @@
 @font-face {
   font-family: Roboto-Thin;
-  src: url('Roboto-Thin.ttf');
+  src: url("Roboto-Thin.ttf");
 }
 
 html {
@@ -92,9 +92,9 @@ a {
 
 .links {
   font-size: var(--text-size);
-  display: grid;
-
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   row-gap: calc(var(--text-size) / 4);
 }
 
@@ -115,5 +115,9 @@ a {
 }
 
 .links a:hover {
-  filter: invert(1)
+  filter: invert(1);
+}
+
+.divisor {
+  display: none;
 }
