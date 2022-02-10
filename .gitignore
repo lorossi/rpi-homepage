@@ -1,3 +1,4 @@
 settings.json
 links.json
 *.log
+venv
