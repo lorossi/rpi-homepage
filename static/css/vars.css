@@ -2,7 +2,7 @@
   --text-color: #ebebeb;
 }
 
-@media only screen and (max-width: 999px) {
+@media only screen and (max-width: 768px) {
   :root {
     --title-size: 3rem;
     --subtitle-size: 1.75rem;
@@ -10,7 +10,7 @@
   }
 }
 
-@media only screen and (min-width: 1000px) and (max-width: 1200px) {
+@media only screen and (min-width: 769px) and (max-width: 1200px) {
   :root {
     --title-size: 6rem;
     --subtitle-size: 2.5rem;
