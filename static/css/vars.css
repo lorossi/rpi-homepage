@@ -12,16 +12,16 @@
 
 @media only screen and (min-width: 769px) and (max-width: 1200px) {
   :root {
-    --title-size: 6rem;
-    --subtitle-size: 2.5rem;
-    --text-size: 3rem;
+    --title-size: 5.5rem;
+    --subtitle-size: 1.5rem;
+    --text-size: 2.5rem;
   }
 }
 
 @media only screen and (min-width: 1201px) {
   :root {
     --title-size: 6rem;
-    --subtitle-size: 2.5rem;
-    --text-size: 4rem;
+    --subtitle-size: 2rem;
+    --text-size: 3rem;
   }
 }

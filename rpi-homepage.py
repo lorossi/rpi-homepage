@@ -14,7 +14,8 @@ def loadSettings(path: str = "static/src/settings.json") -> dict:
     """Load settings from file.
 
     Args:
-        path (str, optional): Settings file path. Defaults to "static/src/settings.json".
+        path (str, optional): Settings file path. \
+            Defaults to "static/src/settings.json".
 
     Returns:
         dict: Settings dictionary
@@ -31,7 +32,8 @@ def loadLinks(
 
     Args:
         base_ip (str): Base ip (either local or zerotier ip)
-        path (str, optional): Path of links file. Defaults to "static/src/links.json".
+        path (str, optional): Path of links file. \
+            Defaults to "static/src/links.json".
 
     Returns:
         dict: [description]
@@ -53,7 +55,8 @@ def loadColors(path: str = "static/src/colors.json") -> dict:
     """Loads colors from file.
 
     Args:
-        path (str, optional): Colors file path. Defaults to "static/src/colors.json".
+        path (str, optional): Colors file path. \
+            Defaults to "static/src/colors.json".
 
     Returns:
         dict
