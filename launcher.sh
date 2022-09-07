@@ -1,3 +1,3 @@
-#!/bin/sh
+#!/bin/bash
 cd /home/pi/scripts/rpi-homepage
-python3 rpi-homepage.py &
+venv/bin/python3 rpi-homepage.py &
