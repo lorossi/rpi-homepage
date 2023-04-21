@@ -29,7 +29,7 @@ def loadSettings(path: str = "static/src/settings.json") -> dict:
 
 def loadLinks(
     is_zerotier: bool = False, path: str = "static/src/links.json"
-) -> list[str]:
+) -> list[dict[str, str]]:
     """Loads links from file.
 
     Args:
@@ -39,14 +39,14 @@ def loadLinks(
             Defaults to "static/src/links.json".
 
     Returns:
-        list[str]: _description_
+        list[dict[str, str]]: List of links to be rendered
     """
     logging.info("Loading links")
     with open(path, "r") as f:
         links_dict = ujson.load(f)
 
     links = [Link.fromJSON(link) for link in links_dict]
-    return [link.getFullUrl(is_zerotier) for link in links]
+    return [link.getPropertiesDict(is_zerotier) for link in links]
 
 
 def loadColors(path: str = "static/src/colors.json") -> dict:
@@ -134,7 +134,7 @@ def index() -> render_template:
 
     # format links according to request
     # (either local, from lan or from zerotier)
-    if ip.startswith("192.168.") or ip.startswith("10."):
+    if ip.startswith("192.168.") or ip.startswith("10.") or ip.startswith("127."):
         is_zerotier = False
     else:
         is_zerotier = True
@@ -171,16 +171,16 @@ def get_greetings() -> str:
     logging.info(f"Serving greetings to {ip}")
 
     settings = loadSettings()
+    hour = datetime.now().hour
 
-    match datetime.now().hour:
-        case range(0, 5):
-            greeting = settings["Greetings"]["night"]
-        case range(5, 12):
-            greeting = settings["Greetings"]["morning"]
-        case range(12, 18):
-            greeting = settings["Greetings"]["afternoon"]
-        case range(18, 24):
-            greeting = settings["Greetings"]["evening"]
+    if hour < 6:
+        greeting = settings["Greetings"]["night"]
+    elif hour < 12:
+        greeting = settings["Greetings"]["morning"]
+    elif hour < 18:
+        greeting = settings["Greetings"]["afternoon"]
+    else:
+        greeting = settings["Greetings"]["evening"]
 
     # weather endpoint
     return jsonify(
