@@ -174,13 +174,13 @@ def get_greetings() -> str:
 
     match datetime.now().hour:
         case range(0, 5):
-            greeting = settings["Server"]["greetings"]["night"]
+            greeting = settings["Greetings"]["night"]
         case range(5, 12):
-            greeting = settings["Server"]["greetings"]["morning"]
+            greeting = settings["Greetings"]["morning"]
         case range(12, 18):
-            greeting = settings["Server"]["greetings"]["afternoon"]
+            greeting = settings["Greetings"]["afternoon"]
         case range(18, 24):
-            greeting = settings["Server"]["greetings"]["evening"]
+            greeting = settings["Greetings"]["evening"]
 
     # weather endpoint
     return jsonify(

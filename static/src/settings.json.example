@@ -9,4 +9,10 @@
     "city": "YOUR CITY",
     "language": "YOUR LANGUAGE - example: en, it"
   }
+  "Greetings": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "night": "Good night"
+  }
 }
