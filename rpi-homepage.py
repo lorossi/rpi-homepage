@@ -13,6 +13,7 @@ from flask_classful import FlaskView, route
 
 
 from modules.links import Link
+from modules.gradients import Gradient
 
 app = Flask(__name__)
 
@@ -56,7 +57,9 @@ class Server(FlaskView):
 
     def _loadColors(self) -> dict:
         with open(self._colors_path, "r") as f:
-            return ujson.load(f)
+            gradients_list = ujson.load(f)
+
+        return [Gradient.fromList(gradient) for gradient in gradients_list]
 
     def _getGradient(self) -> str:
         """Create a css gradient string.
@@ -66,11 +69,10 @@ class Server(FlaskView):
         """
         logging.info("Getting a gradient")
         # pick two colors
-        from_c, to_c = choice(self._colors)
+        color = choice(self._colors)
         # set rotation
         angle = randint(0, 360)
-
-        return f"linear-gradient({angle}deg, {from_c}, {to_c});"
+        return color.getCss(angle)
 
     def _getWeather(self) -> str:
         """Load weather from OpenWeatherMap.
