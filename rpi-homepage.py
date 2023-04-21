@@ -49,17 +49,17 @@ def loadLinks(
     return [link.getFullUrl(is_zerotier) for link in links]
 
 
-def loadColours(path: str = "static/src/colours.json") -> dict:
-    """Loads colours from file.
+def loadColors(path: str = "static/src/colors.json") -> dict:
+    """Loads colors from file.
 
     Args:
-        path (str, optional): Colours file path. \
-            Defaults to "static/src/colours.json".
+        path (str, optional): Colors file path. \
+            Defaults to "static/src/colors.json".
 
     Returns:
         dict
     """
-    logging.info("Loading colours")
+    logging.info("Loading colors")
     with open(path, "r") as f:
         return ujson.load(f)
 
@@ -71,9 +71,9 @@ def getGradient() -> str:
         str
     """
     logging.info("Getting a gradient")
-    colours = loadColours()
-    # pick two colours
-    from_c, to_c = choice(colours)
+    colors = loadColors()
+    # pick two colors
+    from_c, to_c = choice(colors)
     # set rotation
     angle = randint(0, 360)
 
