@@ -10,14 +10,4 @@
     justify-items: center;
     justify-content: center;
   }
-
-  .divisor {
-    display: inline-block;
-    width: calc(var(--text-size) / 6);
-    height: calc(var(--text-size) / 6);
-    margin-bottom: calc(var(--text-size) / 5);
-    margin-right: calc(var(--text-size) / 12);
-    background-color: var(--text-color);
-    border-radius: 50%;
-  }
 }
