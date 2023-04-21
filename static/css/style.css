@@ -103,17 +103,6 @@ a {
   position: relative;
 }
 
-.links a::after {
-  content: "";
-  position: absolute;
-  bottom: 2px;
-  width: 102%;
-  left: -1%;
-  height: calc(var(--text-size) / 32);
-  background: var(--text-color);
-  display: block;
-}
-
 .links a:hover {
   filter: invert(1);
 }
