@@ -1,4 +1,5 @@
 """This module contains the logic to handle the homepage."""
+from __future__ import annotations
 
 import logging
 from datetime import datetime
@@ -6,189 +7,177 @@ from random import choice, randint
 
 import requests
 import ujson
+
 from flask import Flask, jsonify, render_template, request
+from flask_classful import FlaskView, route
+
 
 from modules.links import Link
 
 app = Flask(__name__)
 
 
-def loadSettings(path: str = "static/src/settings.json") -> dict:
-    """Load settings from file.
+class Server(FlaskView):
+    def __init__(
+        self,
+        settings_path: str = "static/src/settings.json",
+        links_path="static/src/links.json",
+        colors_path="static/src/colors.json",
+    ):
+        self._settings_path = settings_path
+        self._links_path = links_path
+        self._colors_path = colors_path
 
-    Args:
-        path (str, optional): Settings file path. \
-            Defaults to "static/src/settings.json".
+        self._settings = self._loadSettings()
+        self._links = self._loadLinks()
+        self._colors = self._loadColors()
 
-    Returns:
-        dict: Settings dictionary
-    """
-    logging.info("Loading settings")
-    with open(path, "r") as f:
-        return ujson.load(f)
+    def _loadSettings(self) -> dict:
+        with open(self._settings_path, "r") as f:
+            return ujson.load(f)
 
+    def _loadLinks(self) -> list[dict[str, str]]:
+        with open(self._links_path, "r") as f:
+            links_dict = ujson.load(f)
 
-def loadLinks(
-    is_zerotier: bool = False, path: str = "static/src/links.json"
-) -> list[dict[str, str]]:
-    """Load links from file.
+        return [Link.fromJSON(link) for link in links_dict]
 
-    Args:
-        is_zerotier (bool, optional): True if the source ip is coming \
-            from the ZeroTier vpn. Defaults to False.
-        path (str, optional): path of the file containing all the links. \
-            Defaults to "static/src/links.json".
+    def _loadColors(self) -> dict:
+        with open(self._colors_path, "r") as f:
+            return ujson.load(f)
 
-    Returns:
-        list[dict[str, str]]: List of links to be rendered
-    """
-    logging.info("Loading links")
-    with open(path, "r") as f:
-        links_dict = ujson.load(f)
+    def _getGradient(self) -> str:
+        """Create a css gradient string.
 
-    links = [Link.fromJSON(link) for link in links_dict]
-    return [link.getPropertiesDict(is_zerotier) for link in links]
+        Returns:
+            str
+        """
+        logging.info("Getting a gradient")
+        # pick two colors
+        from_c, to_c = choice(self._colors)
+        # set rotation
+        angle = randint(0, 360)
 
+        return f"linear-gradient({angle}deg, {from_c}, {to_c});"
 
-def loadColors(path: str = "static/src/colors.json") -> dict:
-    """Load colors from file.
+    def _getWeather(self) -> str:
+        """Load weather from OpenWeatherMap.
 
-    Args:
-        path (str, optional): Colors file path. \
-            Defaults to "static/src/colors.json".
+        Returns:
+            str
+        """
+        logging.info("Getting weather")
+        # load parameters from file
+        api_key = self._settings["OpenWeatherMap"]["api_key"]
+        city = self._settings["OpenWeatherMap"]["city"]
+        language = self._settings["OpenWeatherMap"].get("language", "en")
+        # pack the url
+        request_url = (
+            f"http://api.openweathermap.org/data/2.5/weather?"
+            f"q={city}&appid={api_key}"
+            f"&units=metric&lang={language}"
+        )
+        # make the request
+        json_response = requests.get(request_url).json()
 
-    Returns:
-        dict
-    """
-    logging.info("Loading colors")
-    with open(path, "r") as f:
-        return ujson.load(f)
+        if json_response["cod"] != 200:
+            # negative response, just return the error code
+            return {
+                "cod": json_response["cod"],
+            }
 
-
-def getGradient() -> str:
-    """Create a css gradient string.
-
-    Returns:
-        str
-    """
-    logging.info("Getting a gradient")
-    colors = loadColors()
-    # pick two colors
-    from_c, to_c = choice(colors)
-    # set rotation
-    angle = randint(0, 360)
-
-    return f"linear-gradient({angle}deg, {from_c}, {to_c});"
-
-
-def getWeather() -> str:
-    """Load weather from OpenWeatherMap.
-
-    Returns:
-        str
-    """
-    logging.info("Getting weather")
-    # load parameters from file
-    settings = loadSettings()
-    api_key = settings["OpenWeatherMap"]["api_key"]
-    city = settings["OpenWeatherMap"]["city"]
-    language = settings["OpenWeatherMap"].get("language", "it")
-    # pack the url
-    request_url = (
-        f"http://api.openweathermap.org/data/2.5/weather?"
-        f"q={city}&appid={api_key}"
-        f"&units=metric&lang={language}"
-    )
-    # make the request
-    json_response = requests.get(request_url).json()
-
-    if json_response["cod"] != 200:
-        # negative response, just return the error code
+        # otherwise return an hefty dict
+        temp = json_response["main"]["temp"]
+        hum = json_response["main"]["humidity"]
+        description = json_response["weather"][0]["description"]
         return {
-            "cod": json_response["cod"],
+            "cod": 200,
+            "city": city.lower(),
+            "temperature": f"{round(temp, 1)}°C",
+            "humidity": f"{hum}%",
+            "description": description,
         }
 
-    # otherwise return an hefty dict
-    temp = json_response["main"]["temp"]
-    hum = json_response["main"]["humidity"]
-    description = json_response["weather"][0]["description"]
-    return {
-        "cod": 200,
-        "city": city.lower(),
-        "temperature": f"{round(temp, 1)}°C",
-        "humidity": f"{hum}%",
-        "description": description,
-    }
+    @route("/")
+    def index(self) -> render_template:
+        """Render homepage.
+
+        Returns:
+            render_template
+        """
+        # load request ip
+        ip = request.remote_addr
+        logging.info(f"Serving homepage to {ip}")
+
+        # format links according to request
+        # (either local, from lan or from zerotier)
+        if ip.startswith("192.168.") or ip.startswith("10.") or ip.startswith("127."):
+            is_zerotier = False
+        else:
+            is_zerotier = True
+
+        links = [link.getPropertiesDict(is_zerotier) for link in self._links]
+        # get a gradient
+        gradient = self._getGradient()
+        # return all to main template
+        return render_template("index.html", links=links, gradient=gradient)
+
+    @route("/get/weather/")
+    def get_weather(self) -> str:
+        """Weather endpoint.
+
+        Returns:
+            str
+        """
+        # load request ip
+        ip = request.remote_addr
+        logging.info(f"Serving weather to {ip}")
+        # weather endpoint
+        return jsonify(self._getWeather())
+
+    @route("/get/greetings/")
+    def get_greetings(self) -> str:
+        """Greetings endpoint.
+
+        Returns:
+            str
+        """
+        # load request ip
+        ip = request.remote_addr
+        logging.info(f"Serving greetings to {ip}")
+
+        hour = datetime.now().hour
+
+        if hour < 6:
+            greeting = self._settings["Greetings"]["night"]
+        elif hour < 12:
+            greeting = self._settings["Greetings"]["morning"]
+        elif hour < 18:
+            greeting = self._settings["Greetings"]["afternoon"]
+        else:
+            greeting = self._settings["Greetings"]["evening"]
+
+        # weather endpoint
+        return jsonify(
+            {
+                "message": greeting,
+            }
+        )
+
+    @property
+    def host(self) -> str:
+        return self._settings["Server"]["host"]
+
+    @property
+    def port(self) -> int:
+        return self._settings["Server"]["port"]
+
+    @property
+    def debug(self) -> bool:
+        return self._settings["Server"]["debug"]
 
 
-@app.route("/")
-@app.route("/homepage")
-def index() -> render_template:
-    """Render homepage.
-
-    Returns:
-        render_template
-    """
-    # load request ip
-    ip = request.remote_addr
-    logging.info(f"Serving homepage to {ip}")
-
-    # format links according to request
-    # (either local, from lan or from zerotier)
-    if ip.startswith("192.168.") or ip.startswith("10.") or ip.startswith("127."):
-        is_zerotier = False
-    else:
-        is_zerotier = True
-
-    links = loadLinks(is_zerotier=is_zerotier)
-    # get a gradient
-    gradient = getGradient()
-    # return all to main template
-    return render_template("index.html", links=links, gradient=gradient)
-
-
-@app.route("/get/weather/", methods=["GET"])
-def get_weather() -> str:
-    """Weather endpoint.
-
-    Returns:
-        str
-    """
-    # load request ip
-    ip = request.remote_addr
-    logging.info(f"Serving weather to {ip}")
-    # weather endpoint
-    return jsonify(getWeather())
-
-
-@app.route("/get/greetings/", methods=["GET"])
-def get_greetings() -> str:
-    """Greetings endpoint.
-
-    Returns:
-        str
-    """
-    ip = request.remote_addr
-    logging.info(f"Serving greetings to {ip}")
-
-    settings = loadSettings()
-    hour = datetime.now().hour
-
-    if hour < 6:
-        greeting = settings["Greetings"]["night"]
-    elif hour < 12:
-        greeting = settings["Greetings"]["morning"]
-    elif hour < 18:
-        greeting = settings["Greetings"]["afternoon"]
-    else:
-        greeting = settings["Greetings"]["evening"]
-
-    # weather endpoint
-    return jsonify(
-        {
-            "message": greeting,
-        }
-    )
+Server.register(app, route_base="/")
 
 
 def main():
@@ -196,18 +185,13 @@ def main():
     logging.basicConfig(
         filename=__file__.replace(".py", ".log"),
         level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
+        format="%(asctime)s - %(levelname)s - %(message)s",
         filemode="w",
     )
 
-    logging.info("Script started")
-
-    settings = loadSettings()
-    app.run(
-        host=settings["Server"]["host"],
-        port=settings["Server"]["port"],
-        debug=settings["Server"]["debug"],
-    )
+    logging.info("Starting server")
+    s = Server()
+    app.run(host=s.host, port=s.port, debug=s.debug)
 
 
 if __name__ == "__main__":
