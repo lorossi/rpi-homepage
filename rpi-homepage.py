@@ -110,6 +110,17 @@ class Server(FlaskView):
             "description": description,
         }
 
+    def _isLocalIp(self, ip: str) -> bool:
+        """Check if an ip is local.
+
+        Args:
+            ip (str): Ip to check.
+
+        Returns:
+            bool
+        """
+        return ip.startswith("192.168.") or ip.startswith("127.")
+
     @route("/")
     def index(self) -> render_template:
         """Render homepage.
@@ -123,12 +134,7 @@ class Server(FlaskView):
 
         # format links according to request
         # (either local, from lan or from zerotier)
-        if ip.startswith("192.168.") or ip.startswith("10.") or ip.startswith("127."):
-            is_zerotier = False
-        else:
-            is_zerotier = True
-
-        links = [link.getPropertiesDict(is_zerotier) for link in self._links]
+        links = [link.getPropertiesDict(self._isLocalIp(ip)) for link in self._links]
         # get a gradient
         gradient = self._getGradient()
         # return all to main template
