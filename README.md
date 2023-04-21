@@ -38,7 +38,7 @@ In order to use this script, you have to:
 1. Simply run `rpi-homepage.py` and connect through your browser.
 1. Done!
 
-## Screenshots (outdated)
+## Screenshots
 
 ![screenshot-1](screenshots/screenshot_1.png)
 ![screenshot-2](screenshots/screenshot_2.png)
