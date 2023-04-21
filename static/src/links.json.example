@@ -2,12 +2,8 @@
   {
     "display_name": "SHOWN NAME",
     "name": "SERVICE NAME",
-    "port": SERVICE PORT,
-    "path": "SERVICE PATH - can be omitted"
-  },
-  {
-    "display_name": "SHOWN NAME",
-    "name": "SERVICE NAME",
+    "ip": "SERVICE IP",
+    "zerotier_ip": "ZEROTIER SERVICE IP",
     "port": SERVICE PORT,
     "path": "SERVICE PATH - can be omitted"
   }
