@@ -6,6 +6,8 @@ from datetime import datetime
 from random import choice, randint
 from flask import Flask, render_template, jsonify, request
 
+from modules.links import Link
+
 
 app = Flask(__name__)
 
@@ -26,42 +28,38 @@ def loadSettings(path: str = "static/src/settings.json") -> dict:
 
 
 def loadLinks(
-    base_ip: str = "192.168.1.1", path: str = "static/src/links.json"
-) -> dict:
-    """Loads links from settings file.
+    is_zerotier: bool = False, path: str = "static/src/links.json"
+) -> list[str]:
+    """Loads links from file.
 
     Args:
-        base_ip (str): Base ip (either local or zerotier ip)
-        path (str, optional): Path of links file. \
+        is_zerotier (bool, optional): True if the source ip is coming \
+            from the ZeroTier vpn. Defaults to False.
+        path (str, optional): path of the file containing all the links. \
             Defaults to "static/src/links.json".
 
     Returns:
-        dict: [description]
+        list[str]: _description_
     """
     logging.info("Loading links")
     with open(path, "r") as f:
-        links = ujson.load(f)
+        links_dict = ujson.load(f)
 
-    return [
-        {
-            "href": f"http://{base_ip}:{link['port']}/{link.get('path', '')}",
-            "name": link["display_name"],
-        }
-        for link in links
-    ]
+    links = [Link.fromJSON(link) for link in links_dict]
+    return [link.getFullUrl(is_zerotier) for link in links]
 
 
-def loadColors(path: str = "static/src/colors.json") -> dict:
-    """Loads colors from file.
+def loadColours(path: str = "static/src/colours.json") -> dict:
+    """Loads colours from file.
 
     Args:
-        path (str, optional): Colors file path. \
-            Defaults to "static/src/colors.json".
+        path (str, optional): Colours file path. \
+            Defaults to "static/src/colours.json".
 
     Returns:
         dict
     """
-    logging.info("Loading colors")
+    logging.info("Loading colours")
     with open(path, "r") as f:
         return ujson.load(f)
 
@@ -73,9 +71,9 @@ def getGradient() -> str:
         str
     """
     logging.info("Getting a gradient")
-    colors = loadColors()
-    # pick two colors
-    from_c, to_c = choice(colors)
+    colours = loadColours()
+    # pick two colours
+    from_c, to_c = choice(colours)
     # set rotation
     angle = randint(0, 360)
 
@@ -133,17 +131,15 @@ def index() -> render_template:
     # load request ip
     ip = request.remote_addr
     logging.info(f"Serving homepage to {ip}")
-    settings = loadSettings()
+
     # format links according to request
     # (either local, from lan or from zerotier)
-    if ip[:3] == "127":
-        base_ip = "127.0.0.1"
-    elif ip[:3] == "192":
-        base_ip = settings["Server"].get("lan-ip")
+    if ip.startswith("192.168.") or ip.startswith("10."):
+        is_zerotier = False
     else:
-        base_ip = settings["Server"].get("zerotier-ip")
+        is_zerotier = True
 
-    links = loadLinks(base_ip=base_ip)
+    links = loadLinks(is_zerotier=is_zerotier)
     # get a gradient
     gradient = getGradient()
     # return all to main template
@@ -175,16 +171,16 @@ def get_greetings() -> str:
     logging.info(f"Serving greetings to {ip}")
 
     settings = loadSettings()
-    hour = datetime.now().hour
 
-    if hour <= 4:
-        greeting = settings["Server"]["greetings"]["night"]
-    elif hour <= 12:
-        greeting = settings["Server"]["greetings"]["morning"]
-    elif hour <= 18:
-        greeting = settings["Server"]["greetings"]["afternoon"]
-    else:
-        greeting = settings["Server"]["greetings"]["evening"]
+    match datetime.now().hour:
+        case range(0, 5):
+            greeting = settings["Server"]["greetings"]["night"]
+        case range(5, 12):
+            greeting = settings["Server"]["greetings"]["morning"]
+        case range(12, 18):
+            greeting = settings["Server"]["greetings"]["afternoon"]
+        case range(18, 24):
+            greeting = settings["Server"]["greetings"]["evening"]
 
     # weather endpoint
     return jsonify(
