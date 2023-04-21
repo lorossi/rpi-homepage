@@ -1,3 +1,3 @@
 # TODO list
 
-1. Update screenshots
+- [x] Update screenshots
