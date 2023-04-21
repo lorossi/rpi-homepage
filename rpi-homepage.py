@@ -18,12 +18,24 @@ app = Flask(__name__)
 
 
 class Server(FlaskView):
+    """This class contains the logic to handle the homepage."""
+
     def __init__(
         self,
         settings_path: str = "static/src/settings.json",
         links_path="static/src/links.json",
         colors_path="static/src/colors.json",
     ):
+        """Initialize the server.
+
+        Args:
+            settings_path (str, optional): Path to settings file. \
+                Defaults to "static/src/settings.json".
+            links_path (str, optional): Path to links file. \
+                Defaults to "static/src/links.json".
+            colors_path (str, optional): Path to colors file. \
+                Defaults to "static/src/colors.json".
+        """
         self._settings_path = settings_path
         self._links_path = links_path
         self._colors_path = colors_path
@@ -166,14 +178,17 @@ class Server(FlaskView):
 
     @property
     def host(self) -> str:
+        """Get the host from settings."""
         return self._settings["Server"]["host"]
 
     @property
     def port(self) -> int:
+        """Get the port from settings."""
         return self._settings["Server"]["port"]
 
     @property
     def debug(self) -> bool:
+        """Get the debug flag from settings."""
         return self._settings["Server"]["debug"]
 
 
