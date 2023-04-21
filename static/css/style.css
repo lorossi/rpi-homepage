@@ -99,14 +99,9 @@ a {
 }
 
 .links a {
-  text-decoration: none;
   position: relative;
 }
 
 .links a:hover {
   filter: invert(1);
-}
-
-.divisor {
-  display: none;
 }
