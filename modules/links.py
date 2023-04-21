@@ -6,14 +6,14 @@ class Link:
         self,
         display_name: str,
         name: str,
-        ip: str,
+        lan_ip: str,
         zerotier_ip: str,
         port: str,
         path: str = None,
     ) -> Link:
         self._display_name = display_name
         self._name = name
-        self._ip = ip
+        self._lan_ip = lan_ip
         self._zerotier_ip = zerotier_ip
         self._port = port
         self._path = path
@@ -23,7 +23,7 @@ class Link:
         return Link(
             json["display_name"],
             json["name"],
-            json["ip"],
+            json["lan_ip"],
             json["zerotier_ip"],
             json["port"],
             json.get("path", None),
@@ -33,14 +33,14 @@ class Link:
         if zerotier:
             return self.zerotier_url
 
-        return self.url
+        return self.lan_url
 
     @property
-    def url(self) -> str:
+    def lan_url(self) -> str:
         if self._path is None:
-            return f"http://{self._ip}:{self._port}"
+            return f"http://{self._lan_ip}:{self._port}"
 
-        return f"http://{self._ip}:{self._port}/{self._path}"
+        return f"http://{self._lan_ip}:{self._port}/{self._path}"
 
     @property
     def zerotier_url(self) -> str:
