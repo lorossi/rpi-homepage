@@ -1,13 +1,14 @@
-import ujson
-import logging
-import requests
+"""This module contains the logic to handle the homepage."""
 
+import logging
 from datetime import datetime
 from random import choice, randint
-from flask import Flask, render_template, jsonify, request
+
+import requests
+import ujson
+from flask import Flask, jsonify, render_template, request
 
 from modules.links import Link
-
 
 app = Flask(__name__)
 
@@ -30,7 +31,7 @@ def loadSettings(path: str = "static/src/settings.json") -> dict:
 def loadLinks(
     is_zerotier: bool = False, path: str = "static/src/links.json"
 ) -> list[dict[str, str]]:
-    """Loads links from file.
+    """Load links from file.
 
     Args:
         is_zerotier (bool, optional): True if the source ip is coming \
@@ -50,7 +51,7 @@ def loadLinks(
 
 
 def loadColors(path: str = "static/src/colors.json") -> dict:
-    """Loads colors from file.
+    """Load colors from file.
 
     Args:
         path (str, optional): Colors file path. \
@@ -65,7 +66,7 @@ def loadColors(path: str = "static/src/colors.json") -> dict:
 
 
 def getGradient() -> str:
-    """Creates a css gradient string
+    """Create a css gradient string.
 
     Returns:
         str
@@ -81,7 +82,7 @@ def getGradient() -> str:
 
 
 def getWeather() -> str:
-    """Loads weather from OpenWeatherMap
+    """Load weather from OpenWeatherMap.
 
     Returns:
         str
@@ -123,7 +124,7 @@ def getWeather() -> str:
 @app.route("/")
 @app.route("/homepage")
 def index() -> render_template:
-    """Renders homepage
+    """Render homepage.
 
     Returns:
         render_template
@@ -148,7 +149,7 @@ def index() -> render_template:
 
 @app.route("/get/weather/", methods=["GET"])
 def get_weather() -> str:
-    """Weather endpoint
+    """Weather endpoint.
 
     Returns:
         str
@@ -162,7 +163,7 @@ def get_weather() -> str:
 
 @app.route("/get/greetings/", methods=["GET"])
 def get_greetings() -> str:
-    """Greetings endpoint
+    """Greetings endpoint.
 
     Returns:
         str
@@ -191,6 +192,7 @@ def get_greetings() -> str:
 
 
 def main():
+    """Program entry point, starting the server."""
     logging.basicConfig(
         filename=__file__.replace(".py", ".log"),
         level=logging.INFO,
