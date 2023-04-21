@@ -35,6 +35,16 @@ class Link:
 
         return self.lan_url
 
+    def getPropertiesDict(self, zerotier: bool = False) -> dict[str, str]:
+        properties = {"name": self._display_name}
+
+        if zerotier:
+            properties["href"] = self.zerotier_url
+        else:
+            properties["href"] = self.lan_url
+
+        return properties
+
     @property
     def lan_url(self) -> str:
         if self._path is None:
