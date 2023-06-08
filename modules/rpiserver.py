@@ -15,7 +15,7 @@ from modules.settings import ServerSettings
 from modules.weather import WeatherResponse, WeatherService
 
 
-class RpiServer(Server):
+class RPiServer(Server):
     """RpiServer class, used to represent the server."""
 
     _settings: ServerSettings
@@ -25,7 +25,7 @@ class RpiServer(Server):
 
     _weather: WeatherService
 
-    def __init__(self, settings_path: str = "settings/settings.toml") -> RpiServer:
+    def __init__(self, settings_path: str = "settings/settings.toml") -> RPiServer:
         """Create a RpiServer object.
 
         Args:
