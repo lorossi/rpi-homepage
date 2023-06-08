@@ -6,6 +6,7 @@
     "Guvicorn",
     "Jellyfin",
     "jsonify",
+    "pydantic",
     "rpiserver",
     "uvicorn",
     "zerotier"
