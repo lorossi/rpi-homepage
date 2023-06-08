@@ -1,8 +1,8 @@
+Jinja2==3.1.2
 aiohttp==3.8.4
 apscheduler==3.10.1
 fastapi==0.96.0
 pydantic==1.10.8
-starlette==0.28.0
 toml==0.10.2
 ujson==5.7.0
 uvicorn==0.22.0
