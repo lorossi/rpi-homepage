@@ -10,7 +10,7 @@ import toml
 from modules.gradients import Gradient
 from modules.greetings import Greeting, GreetingResponse
 from modules.links import Link
-from modules.server import HTMLResponse, Request, Server
+from modules.server import HTMLResponse, Request, Server, HTTPException
 from modules.settings import ServerSettings
 from modules.weather import WeatherResponse, WeatherService
 
@@ -47,7 +47,7 @@ class RPiServer(Server):
         self.addRoute("/", self._indexPage)
         self.addRoute("/get/weather", self._weatherApi)
         self.addRoute("/get/greetings", self._greetingApi)
-        self.addHTTPExceptionRoute(self._indexPage)
+        self.addHTTPExceptionRoute(self._errorPage)
 
         logging.info("Initializing weather")
         self._weather = WeatherService()
@@ -134,6 +134,30 @@ class RPiServer(Server):
             links=links,
             gradient=gradient,
         )
+
+    async def _errorPage(
+        self, request: Request, exception: HTTPException
+    ) -> HTMLResponse:
+        """Handle an HTTPException.
+
+        If the error is a 404, redirect to the index page.
+
+        Args:
+            request (Request): HTTP request
+            exception (HTTPException): HTTP exception
+
+        Returns:
+            HTMLResponse
+        """
+        logging.warning(f"Handling HTTPException: {exception}")
+
+        is_api_request = request.url.path.startswith("/get")
+        error_code = exception.status_code
+        if error_code == 404 and not is_api_request:
+            return self.generateTemplateResponse(
+                request=request,
+                template="redirect.html",
+            )
 
     async def _weatherApi(self, request: Request) -> WeatherResponse:
         """Serve the weather api.
