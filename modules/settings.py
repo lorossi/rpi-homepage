@@ -61,3 +61,4 @@ class WeatherSettings(Settings):
     api_key: str
     city: str
     language: str
+    cache_duration: int
