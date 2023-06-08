@@ -1,0 +1,101 @@
+from __future__ import annotations
+
+from pydantic import BaseModel
+import logging
+from dataclasses import dataclass
+
+import aiohttp
+import toml
+
+from modules.settings import WeatherSettings
+
+
+class WeatherResponse(BaseModel):
+    cod: int
+    city: str
+    temperature: str
+    min_temperature: str
+    max_temperature: str
+    humidity: str
+    description: str
+
+
+@dataclass
+class Weather:
+    cod: int
+    city: str
+    temperature: float
+    min_temperature: float
+    max_temperature: float
+    humidity: float
+    description: str
+
+    def _formatTemperature(self, temperature: float) -> str:
+        return f"{round(temperature, 1)}°C"
+
+    @property
+    def temperature_formatted(self) -> str:
+        return self._formatTemperature(self.temperature)
+
+    @property
+    def min_temperature_formatted(self) -> str:
+        return self._formatTemperature(self.min_temperature)
+
+    @property
+    def max_temperature_formatted(self) -> str:
+        return self._formatTemperature(self.max_temperature)
+
+    @property
+    def humidity_formatted(self) -> str:
+        return f"{int(self.humidity)}%"
+
+    def toResponse(self) -> WeatherResponse:
+        return WeatherResponse(
+            cod=self.cod,
+            city=self.city,
+            temperature=self.temperature_formatted,
+            min_temperature=self.min_temperature_formatted,
+            max_temperature=self.max_temperature_formatted,
+            humidity=self.humidity_formatted,
+            description=self.description,
+        )
+
+
+class WeatherService:
+    _settings: WeatherSettings
+
+    def __init__(self, settings_path: str = "settings/settings.toml") -> WeatherService:
+        """Instantiate a new Weather object."""
+        logging.info("Initializing WeatherService")
+        self._settings_path = settings_path
+        self._loadSettings()
+
+    def _loadSettings(self) -> None:
+        with open(self._settings_path, "r") as f:
+            settings = toml.load(f)[self.__class__.__name__]
+
+        self._settings = WeatherSettings.fromDict(settings)
+
+    async def _requestJSON(self, url: str) -> dict:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                return await response.json()
+
+    async def getWeather(self) -> Weather:
+        request_url = (
+            f"http://api.openweathermap.org/data/2.5/weather?"
+            f"q={self._settings.city}"
+            f"&appid={self._settings.api_key}"
+            f"&units=metric&lang={self._settings.language}"
+        )
+
+        json_data = await self._requestJSON(request_url)
+        return Weather(
+            cod=json_data["cod"],
+            city=json_data["name"],
+            temperature=json_data["main"]["temp"],
+            min_temperature=json_data["main"]["temp_min"],
+            max_temperature=json_data["main"]["temp_max"],
+            humidity=json_data["main"]["humidity"],
+            description=json_data["weather"][0]["description"],
+        )
