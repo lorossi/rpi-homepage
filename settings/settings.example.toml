@@ -8,3 +8,4 @@ greetings_path = ""
 api_key = ""
 city = ""
 language = ""
+cache_duration = 300
