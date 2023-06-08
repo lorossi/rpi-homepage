@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from datetime import datetime
 
 import aiohttp
 import toml
@@ -75,11 +76,17 @@ class WeatherService:
     """WeatherService class, used to represent the weather service."""
 
     _settings: WeatherSettings
+    _cached_weather: Weather
+    _cached_time: float
 
     def __init__(self, settings_path: str = "settings/settings.toml") -> WeatherService:
         """Instantiate a new Weather object."""
         logging.info("Initializing WeatherService")
         self._settings_path = settings_path
+        # set the cached time to 0 so that the weather is fetched on the first request
+        self._cached_time = 0
+        self._cached_weather = None
+
         self._loadSettings()
 
     def _loadSettings(self) -> None:
@@ -94,8 +101,7 @@ class WeatherService:
             async with session.get(url) as response:
                 return await response.json()
 
-    async def getWeather(self) -> Weather:
-        """Get the weather."""
+    async def _requestWeather(self) -> Weather:
         request_url = (
             f"http://api.openweathermap.org/data/2.5/weather?"
             f"q={self._settings.city}"
@@ -113,3 +119,16 @@ class WeatherService:
             humidity=json_data["main"]["humidity"],
             description=json_data["weather"][0]["description"],
         )
+
+    async def getWeather(self) -> Weather:
+        """Get the weather."""
+        elapsed_time = datetime.now().timestamp() - self._cached_time
+        if elapsed_time > self._settings.cache_duration:
+            # if the weather is older than the cache duration, fetch it again
+            logging.info("Fetching weather")
+            # store the weather in the cache
+            self._cached_weather = await self._requestWeather()
+            # update the cached time
+            self._cached_time = datetime.now().timestamp()
+
+        return self._cached_weather
