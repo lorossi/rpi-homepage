@@ -1,16 +1,19 @@
+"""Module for the WeatherService class."""
 from __future__ import annotations
 
-from pydantic import BaseModel
 import logging
 from dataclasses import dataclass
 
 import aiohttp
 import toml
+from pydantic import BaseModel
 
 from modules.settings import WeatherSettings
 
 
 class WeatherResponse(BaseModel):
+    """WeatherResponse class, used to represent a weather response."""
+
     cod: int
     city: str
     temperature: str
@@ -22,6 +25,8 @@ class WeatherResponse(BaseModel):
 
 @dataclass
 class Weather:
+    """Weather class, used to represent the weather."""
+
     cod: int
     city: str
     temperature: float
@@ -35,21 +40,26 @@ class Weather:
 
     @property
     def temperature_formatted(self) -> str:
+        """Get the formatted temperature."""
         return self._formatTemperature(self.temperature)
 
     @property
     def min_temperature_formatted(self) -> str:
+        """Get the formatted minimum temperature."""
         return self._formatTemperature(self.min_temperature)
 
     @property
     def max_temperature_formatted(self) -> str:
+        """Get the formatted maximum temperature."""
         return self._formatTemperature(self.max_temperature)
 
     @property
     def humidity_formatted(self) -> str:
+        """Get the formatted humidity."""
         return f"{int(self.humidity)}%"
 
     def toResponse(self) -> WeatherResponse:
+        """Convert the Weather object to a WeatherResponse object."""
         return WeatherResponse(
             cod=self.cod,
             city=self.city,
@@ -62,6 +72,8 @@ class Weather:
 
 
 class WeatherService:
+    """WeatherService class, used to represent the weather service."""
+
     _settings: WeatherSettings
 
     def __init__(self, settings_path: str = "settings/settings.toml") -> WeatherService:
@@ -77,11 +89,13 @@ class WeatherService:
         self._settings = WeatherSettings.fromDict(settings)
 
     async def _requestJSON(self, url: str) -> dict:
+        """Request a JSON object from a url."""
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 return await response.json()
 
     async def getWeather(self) -> Weather:
+        """Get the weather."""
         request_url = (
             f"http://api.openweathermap.org/data/2.5/weather?"
             f"q={self._settings.city}"

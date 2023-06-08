@@ -1,3 +1,4 @@
+"""Module for the RpiServer class."""
 from __future__ import annotations
 
 import logging
@@ -15,6 +16,8 @@ from modules.weather import WeatherResponse, WeatherService
 
 
 class RpiServer(Server):
+    """RpiServer class, used to represent the server."""
+
     _settings: ServerSettings
     _gradients: list[Gradient]
     _links: list[Link]
@@ -23,6 +26,15 @@ class RpiServer(Server):
     _weather: WeatherService
 
     def __init__(self, settings_path: str = "settings/settings.toml") -> RpiServer:
+        """Create a RpiServer object.
+
+        Args:
+            settings_path (str, optional): Path to the settings file.
+            Defaults to "settings/settings.toml".
+
+        Returns:
+            RpiServer
+        """
         logging.info("Initializing RpiServer")
         self.settings_path = settings_path
 
@@ -40,7 +52,7 @@ class RpiServer(Server):
         self._weather = WeatherService()
 
     def _loadAttributes(self) -> None:
-        """Loads the gradients and links from the settings file"""
+        """Load the gradients and links from the settings file."""
         logging.info("Loading RpiServer attributes")
 
         logging.info("Loading gradients")
@@ -63,7 +75,7 @@ class RpiServer(Server):
         ]
 
     def _isLocalIp(self, ip: str) -> bool:
-        """Check if the ip is a local ip
+        """Check if the ip is local.
 
         Args:
             ip (str): IP address
@@ -84,7 +96,7 @@ class RpiServer(Server):
         return gradient.getCSSString()
 
     def _getGreeting(self) -> Greeting:
-        """Get a greeting
+        """Get a greeting.
 
         Returns:
             Greeting
@@ -96,7 +108,7 @@ class RpiServer(Server):
                 return greeting
 
     async def _indexPage(self, request: Request) -> HTMLResponse:
-        """Serve the index page
+        """Serve the index page.
 
         Args:
             request (Request): HTTP request
@@ -123,7 +135,14 @@ class RpiServer(Server):
         )
 
     async def _weatherApi(self, request: Request) -> WeatherResponse:
-        """Serve the weather api"""
+        """Serve the weather api.
+
+        Args:
+            request (Request): HTTP request
+
+        Returns:
+            WeatherResponse: Weather response
+        """
         logging.info("Serving weather api")
         ip = request.client.host
         local = self._isLocalIp(ip)
@@ -132,7 +151,14 @@ class RpiServer(Server):
         return w.toResponse()
 
     async def _greetingApi(self, request: Request) -> GreetingResponse:
-        """Serve the greeting api"""
+        """Serve the greeting api.
+
+        Args:
+            request (Request): HTTP request
+
+        Returns:
+            GreetingResponse: Greeting response
+        """
         logging.info("Serving greeting api")
         ip = request.client.host
         local = self._isLocalIp(ip)
