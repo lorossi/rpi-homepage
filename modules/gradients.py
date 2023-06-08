@@ -20,7 +20,7 @@ class Gradient:
         self._color_from = color_from
         self._color_to = color_to
 
-    def getCss(self, angle: int = None) -> str:
+    def getCSSString(self, angle: int = None) -> str:
         """Get the css string of the gradient.
 
         Args:
