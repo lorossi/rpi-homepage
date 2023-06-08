@@ -62,13 +62,11 @@ class Link:
         return self.lan_url
 
     def getPropertiesDict(self, lan: bool = False) -> dict[str, str]:
-        """Get the properties of the service as a dictionary, gradients_path
-            to be used by the HTTP renderer.
-
+        """Get the properties as a dictionary.
 
         Args:
-            lan (bool, optional): True if the service is accessed through the
-                local network. Defaults to False.
+            lan (bool, optional): True if the link is accessed through
+                the local network. Defaults to False.
 
         Returns:
             dict[str, str]

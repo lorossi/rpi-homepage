@@ -1,9 +1,12 @@
+"""This module contains the Greeting class, used to represent a greeting."""
 from __future__ import annotations
 
 from pydantic import BaseModel
 
 
 class GreetingResponse(BaseModel):
+    """GreetingResponse class, used to represent a greeting."""
+
     from_hour: int
     to_hour: int
     message: str
@@ -37,14 +40,29 @@ class Greeting:
 
     @property
     def from_hour(self) -> int:
+        """Get the starting hour of the greeting.
+
+        Returns:
+            int
+        """
         return self._from_hour
 
     @property
     def to_hour(self) -> int:
+        """Get the ending hour of the greeting.
+
+        Returns:
+            int
+        """
         return self._to_hour
 
     @property
     def message(self) -> str:
+        """Get the greeting.
+
+        Returns:
+            str
+        """
         return self._message
 
     @staticmethod
@@ -60,6 +78,11 @@ class Greeting:
         return Greeting(**dictionary)
 
     def toResponse(self) -> GreetingResponse:
+        """Convert the Greeting object to a GreetingResponse object.
+
+        Returns:
+            GreetingResponse: The GreetingResponse object.
+        """
         return GreetingResponse(
             from_hour=self._from_hour, to_hour=self._to_hour, message=self._message
         )

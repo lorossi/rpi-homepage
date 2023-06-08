@@ -1,6 +1,7 @@
 """This module contains the Gradient class, used to represent a css gradient."""
 
 from __future__ import annotations
+
 from random import randint
 
 
