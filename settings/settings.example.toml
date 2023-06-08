@@ -1,4 +1,4 @@
-[RpiServer]
+[RPiServer]
 port = 1234
 gradients_path = ""
 links_path = ""

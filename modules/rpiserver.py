@@ -1,4 +1,4 @@
-"""Module for the RpiServer class."""
+"""Module for the RPiServer class."""
 from __future__ import annotations
 
 import logging
@@ -16,7 +16,7 @@ from modules.weather import WeatherResponse, WeatherService
 
 
 class RPiServer(Server):
-    """RpiServer class, used to represent the server."""
+    """RPiServer class, used to represent the server."""
 
     _settings: ServerSettings
     _gradients: list[Gradient]
@@ -26,34 +26,35 @@ class RPiServer(Server):
     _weather: WeatherService
 
     def __init__(self, settings_path: str = "settings/settings.toml") -> RPiServer:
-        """Create a RpiServer object.
+        """Create a RPiServer object.
 
         Args:
             settings_path (str, optional): Path to the settings file.
             Defaults to "settings/settings.toml".
 
         Returns:
-            RpiServer
+            RPiServer
         """
-        logging.info("Initializing RpiServer")
+        logging.info("Initializing RPiServer")
         self.settings_path = settings_path
 
         self.loadSettings()
         self._loadAttributes()
 
-        logging.info("Initializing RpiServer routes")
+        logging.info("Initializing RPiServer routes")
         self.addStaticRoute("/static", "static")
         self.addTemplateFolder("templates")
         self.addRoute("/", self._indexPage)
         self.addRoute("/get/weather", self._weatherApi)
         self.addRoute("/get/greetings", self._greetingApi)
+        self.addHTTPExceptionRoute(self._indexPage)
 
         logging.info("Initializing weather")
         self._weather = WeatherService()
 
     def _loadAttributes(self) -> None:
         """Load the gradients and links from the settings file."""
-        logging.info("Loading RpiServer attributes")
+        logging.info("Loading RPiServer attributes")
 
         logging.info("Loading gradients")
         with open(self._settings.gradients_path, "r") as f:
