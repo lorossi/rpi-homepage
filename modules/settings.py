@@ -48,10 +48,10 @@ class Settings:
 class ServerSettings(Settings):
     """Settings for the server module."""
 
+    port: int
     gradients_path: str
     links_path: str
     greetings_path: str
-    port: int = 8000
 
 
 @dataclass
