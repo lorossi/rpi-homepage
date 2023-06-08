@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from modules.rpiserver import RpiServer
+from modules.rpiserver import RPiServer
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
         filemode="w",
     )
 
-    r = RpiServer()
+    r = RPiServer()
     r.start()
 
 
