@@ -1,29 +1,37 @@
 <!DOCTYPE html>
 <html lang="it">
+  <head>
+    <meta name="description" content="RaspberryPi 4" />
+    <meta charset="utf-8" />
+    <title>{% block title %} {% endblock title %}</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="author" content="Lorenzo Rossi" />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', path='/img/favicon.ico')}}"
+    />
 
-<head>
-  <meta name="description" content="RaspberryPi 4" />
-  <meta charset="utf-8">
-  <title>
-    {% block title %}
-    {% endblock title %}
-  </title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="author" content="Lorenzo Rossi" />
-  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico')}}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='/css/vars.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='/css/style.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='/css/bigscreens.css')}}"
+    />
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/vars.css')}}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bigscreens.css')}}" />
-  
-  {% block head %}
-  {% endblock head %}
-</head>
+    {% block head %} {% endblock head %}
+  </head>
 
-<body>
-  {% block body %}
-  {% endblock body %}
-</body>
-
+  <body>
+    {% block body %} {% endblock body %}
+  </body>
 </html>
