@@ -1,5 +1,7 @@
-settings.json
-links.json
 *.log
 venv
 __pycache__
+settings/*.toml
+!settings/gradients.toml
+!settings/greetings.toml
+!settings/*.example.toml
