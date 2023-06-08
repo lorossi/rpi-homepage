@@ -1,0 +1,10 @@
+[RpiServer]
+port = 1234
+gradients_path = ""
+links_path = ""
+greetings_path = ""
+
+[WeatherService]
+api_key = ""
+city = ""
+language = ""
