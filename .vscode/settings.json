@@ -2,13 +2,16 @@
   "cSpell.words": [
     "apscheduler",
     "Colors",
+    "DLNA",
     "fastapi",
     "Guvicorn",
     "Jellyfin",
     "jsonify",
+    "Odroid",
     "pydantic",
     "rpiserver",
     "uvicorn",
+    "venv",
     "zerotier"
   ],
   "python.linting.flake8Enabled": false,
