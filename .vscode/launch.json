@@ -8,15 +8,6 @@
       "name": "RPiServer",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/modules/rpiserver.py",
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "justMyCode": true
-    },
-    {
-      "name": "Launcher",
-      "type": "python",
-      "request": "launch",
       "program": "${workspaceFolder}/rpi-homepage.py",
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
