@@ -2,28 +2,31 @@
 from __future__ import annotations
 
 import logging
-import random
 from datetime import datetime
 
 import toml
 
-from modules.gradients import Gradient
-from modules.greetings import Greeting, GreetingResponse
+from modules.greetings import Greeting
 from modules.links import Link
-from modules.server import HTMLResponse, Request, Server, HTTPException
+from modules.server import HTMLResponse, HTTPException, Request, Server
 from modules.settings import ServerSettings
+from modules.unsplash import UnsplashResponse, UnsplashService
 from modules.weather import WeatherResponse, WeatherService
+
+
+class APIException(HTTPException):
+    message: str
 
 
 class RPiServer(Server):
     """RPiServer class, used to represent the server."""
 
     _settings: ServerSettings
-    _gradients: list[Gradient]
     _links: list[Link]
     _greetings: list[Greeting]
 
     _weather: WeatherService
+    _unsplash: UnsplashService
 
     def __init__(self, settings_path: str = "settings/settings.toml") -> RPiServer:
         """Create a RPiServer object.
@@ -46,22 +49,17 @@ class RPiServer(Server):
         self.addTemplateFolder("templates")
         self.addRoute("/", self._indexPage)
         self.addRoute("/get/weather", self._weatherApi)
-        self.addRoute("/get/greetings", self._greetingApi)
+        self.addRoute("/get/image", self._unsplashApi)
         self.addHTTPExceptionRoute(self._errorPage)
 
         logging.info("Initializing weather")
         self._weather = WeatherService()
+        logging.info("Initializing unsplash")
+        self._unsplash = UnsplashService()
 
     def _loadAttributes(self) -> None:
         """Load the gradients and links from the settings file."""
         logging.info("Loading RPiServer attributes")
-
-        logging.info("Loading gradients")
-        with open(self._settings.gradients_path, "r") as f:
-            gradients_list = toml.load(f)
-        self._gradients = [
-            Gradient.fromList(gradient) for gradient in gradients_list["Gradients"]
-        ]
 
         logging.info("Loading links")
         with open(self._settings.links_path, "r") as f:
@@ -85,16 +83,6 @@ class RPiServer(Server):
             bool
         """
         return ip.startswith("192.168.1") or ip.startswith("127.0.0")
-
-    def _getGradient(self) -> str:
-        """Create a css gradient string.
-
-        Returns:
-            str
-        """
-        logging.info("Getting a gradient")
-        gradient = random.choice(self._gradients)
-        return gradient.getCSSString()
 
     def _getGreeting(self) -> Greeting:
         """Get a greeting.
@@ -125,14 +113,14 @@ class RPiServer(Server):
         # format the links according to the request
         # (either local or remote)
         links = [link.getPropertiesDict(local) for link in self._links]
-        # get a gradient
-        gradient = self._getGradient()
+        # get a greeting
+        greeting = self._getGreeting()
         # return the page
         return self.generateTemplateResponse(
             request=request,
             template="index.html",
             links=links,
-            gradient=gradient,
+            greeting=greeting,
         )
 
     async def _errorPage(
@@ -153,11 +141,13 @@ class RPiServer(Server):
 
         is_api_request = request.url.path.startswith("/get")
         error_code = exception.status_code
-        if error_code == 404 and not is_api_request:
-            return self.generateTemplateResponse(
-                request=request,
-                template="redirect.html",
-            )
+
+        logging.info(f"Is API request: {is_api_request}, Error code: {error_code}")
+
+        return self.generateTemplateResponse(
+            request=request,
+            template="redirect.html",
+        )
 
     async def _weatherApi(self, request: Request) -> WeatherResponse:
         """Serve the weather api.
@@ -175,18 +165,18 @@ class RPiServer(Server):
         w = await self._weather.getWeather()
         return w.toResponse()
 
-    async def _greetingApi(self, request: Request) -> GreetingResponse:
-        """Serve the greeting api.
+    async def _unsplashApi(self, request: Request) -> UnsplashResponse:
+        """Serve the unsplash api.
 
         Args:
             request (Request): HTTP request
 
         Returns:
-            GreetingResponse: Greeting response
+            UnsplashResponse: Unsplash response
         """
-        logging.info("Serving greeting api")
+        logging.info("Serving unsplash api")
         ip = request.client.host
         local = self._isLocalIp(ip)
         logging.info(f"Client ip: {ip}. Local: {local}")
-        g = self._getGreeting()
-        return g.toResponse()
+        u = await self._unsplash.getRandomPhoto()
+        return u.toResponse()
