@@ -1,3 +1,35 @@
+// load background from backend and set it into body
+const setBackground = async () => {
+  // get background from server
+  const image = await makeRequest("/get/image");
+
+  // place into page
+  if (!image) return;
+  const page = document.querySelector(".page");
+  const background = document.querySelector(".background");
+
+  // set background as solid color
+  background.style.backgroundColor = image.color;
+  // blur background
+  background.classList.add("blur");
+  // set background
+  background.style.backgroundImage = `url(${image.url})`;
+
+  // set text color
+  if (image.light_text) {
+    page.classList.add("light-text");
+    page.classList.remove("dark-text");
+  } else {
+    page.classList.add("dark-text");
+    page.classList.remove("light-text");
+  }
+
+  // set background credits
+  // TODO
+  // set background description
+  // TODO
+};
+
 // loads date into container
 const setDate = () => {
   const now = new Date();
@@ -18,8 +50,6 @@ const setDate = () => {
   const date_text = `${days}/${months}/${years}`;
   const date_obj = document.querySelector("#date");
   if (date_text != date_obj.textContent) date_obj.textContent = date_text;
-
-  setTimeout(setDate, 1000); // 1 second
 };
 
 // loads weather from backend and sets it into containers
@@ -34,20 +64,6 @@ const setWeather = async () => {
     ).textContent = `${weather.temperature} - ${weather.humidity}`;
     document.querySelector("#description").textContent = weather.description;
   }
-
-  setTimeout(setWeather, 1000 * 60 * 5); // 5 minutes
-};
-
-// loads greeting into container
-const setGreeting = async () => {
-  // get greeting from server
-  const greeting = await makeRequest("/get/greetings");
-  // place into page
-  if (greeting && greeting.message) {
-    document.querySelector("#greeting").textContent = greeting.message;
-  }
-
-  setTimeout(setGreeting, 1000 * 60 * 5); // 5 minutes
 };
 
 // makes a request to an url
@@ -61,8 +77,17 @@ const makeRequest = async (url, method = "GET") => {
     .catch(() => null);
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+const main = () => {
+  // set date, weather and background
   setDate();
   setWeather();
-  setGreeting();
+  setBackground();
+  // update date every second
+  setInterval(setDate, 1000);
+  // update weather every 5 minutes
+  setInterval(setWeather, 300000);
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  main();
 });
