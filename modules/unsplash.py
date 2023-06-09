@@ -17,6 +17,7 @@ class UnsplashResponse(BaseModel):
     """UnsplashResponse class, used to represent a unsplash response."""
 
     url: str | None
+    link: str | None
     blur_hash: str | None
     photographer: str | None
     photographer_url: str | None
@@ -31,6 +32,7 @@ class UnsplashPhoto:
     """UnsplashPhoto class, used to represent a unsplash photo."""
 
     url: str
+    link: str
     blur_hash: str
     photographer: str
     photographer_url: str
@@ -46,6 +48,7 @@ class UnsplashPhoto:
         """
         return UnsplashResponse(
             url=self.url,
+            link=self.link,
             blur_hash=self.blur_hash,
             location=self.location,
             photographer=self.photographer,
@@ -138,6 +141,7 @@ class UnsplashService:
         img_data = {
             "color": data["color"],
             "url": data["urls"]["regular"],
+            "link": data["links"]["html"],
             "blur_hash": data["blur_hash"],
             "location": data["location"]["name"],
             "photographer": data["user"]["username"],
