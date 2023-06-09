@@ -4,32 +4,41 @@
 {% endblock head %} {% block body %}
 <div class="page light-text">
   <div class="background"></div>
-  <div class="top">
-    <div class="stats">
-      <div id="greeting">{{greeting.message}}</div>
-      <div id="time"></div>
-      <div id="date"></div>
-    </div>
-  </div>
-
-  <div class="center">
-    <div class="weather">
-      <ul>
-        <li id="city"></li>
-        <li id="temperature-humidity"></li>
-        <li id="description"></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="bottom">
-    <div class="links">
-      {% for link in links %}
-      <div class="link">
-        <a href="{{link.href}}">{{link.name}}</a>
+  <div class="content">
+    <div class="top">
+      <div class="stats">
+        <div id="greeting">{{greeting.message}}</div>
+        <div id="time"></div>
+        <div id="date"></div>
       </div>
-      {% endfor %}
     </div>
+
+    <div class="center">
+      <div class="weather">
+        <ul>
+          <li id="city"></li>
+          <li id="temperature-humidity"></li>
+          <li id="description"></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="links">
+        {% for link in links %}
+        <div class="link">
+          <a href="{{link.href}}">{{link.name}}</a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="credits">
+    <p class="photographer">
+      <a></a>
+    </p>
+    <p class="location"></p>
   </div>
 </div>
 {% endblock body %}

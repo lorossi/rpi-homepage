@@ -9,6 +9,7 @@
     --title-size: 3rem;
     --subtitle-size: 1.75rem;
     --text-size: 1.75rem;
+    --credits-size: 1rem;
   }
 }
 
@@ -17,6 +18,7 @@
     --title-size: 5.5rem;
     --subtitle-size: 1.5rem;
     --text-size: 2.5rem;
+    --credits-size: 1rem;
   }
 }
 
@@ -25,5 +27,6 @@
     --title-size: 6rem;
     --subtitle-size: 2rem;
     --text-size: 3rem;
+    --credits-size: 0.65rem;
   }
 }

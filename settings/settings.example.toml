@@ -12,4 +12,5 @@ cache_duration = 300
 
 [UnsplashService]
 api_key = ""
+query = []
 cache_duration = 30
