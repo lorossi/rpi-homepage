@@ -1,3 +1,4 @@
+"""Unsplash module, used to get a random photo from unsplash."""
 from __future__ import annotations
 
 import logging
@@ -27,6 +28,8 @@ class UnsplashResponse(BaseModel):
 
 @dataclass
 class UnsplashPhoto:
+    """UnsplashPhoto class, used to represent a unsplash photo."""
+
     url: str
     color: str
     blur_hash: str
@@ -36,6 +39,11 @@ class UnsplashPhoto:
     description: str
 
     def toResponse(self) -> UnsplashResponse:
+        """Convert the UnsplashPhoto object to a UnsplashResponse object.
+
+        Returns:
+            UnsplashResponse
+        """
         return UnsplashResponse(
             url=self.url,
             blur_hash=self.blur_hash,
@@ -61,6 +69,8 @@ class UnsplashPhoto:
 
 
 class UnsplashService:
+    """UnsplashService class, used to get a random photo from unsplash."""
+
     _settings_path: str
     _settings: UnsplashSettings
     _cached_photo: UnsplashPhoto
