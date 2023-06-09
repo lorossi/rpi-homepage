@@ -9,3 +9,7 @@ api_key = ""
 city = ""
 language = ""
 cache_duration = 300
+
+[UnsplashService]
+api_key = ""
+cache_duration = 30
