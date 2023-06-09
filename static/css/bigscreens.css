@@ -14,4 +14,8 @@
   .credits {
     padding: calc(var(--text-size) / 2);
   }
+
+  .credits .description {
+    display: block;
+  }
 }
