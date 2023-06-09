@@ -10,6 +10,7 @@
     --subtitle-size: 1.5rem;
     --text-size: 2rem;
     --credits-size: 0.75rem;
+    --blur-radius: 5px;
   }
 }
 
@@ -19,6 +20,7 @@
     --subtitle-size: 1.5rem;
     --text-size: 2.5rem;
     --credits-size: 1rem;
+    --blur-radius: 10px;
   }
 }
 
@@ -28,5 +30,6 @@
     --subtitle-size: 2rem;
     --text-size: 3rem;
     --credits-size: 1rem;
+    --blur-radius: 10px;
   }
 }
