@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import random
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -18,9 +19,8 @@ class UnsplashResponse(BaseModel):
     url: str | None
     blur_hash: str | None
     photographer: str | None
-    city: str | None
-    country: str | None
-    photographer: str | None
+    photographer_url: str | None
+    location: str | None
     description: str | None
     color: str | None
     light_text: bool | None
@@ -31,12 +31,12 @@ class UnsplashPhoto:
     """UnsplashPhoto class, used to represent a unsplash photo."""
 
     url: str
-    color: str
     blur_hash: str
-    city: str
-    country: str
     photographer: str
+    photographer_url: str
+    location: str
     description: str
+    color: str
 
     def toResponse(self) -> UnsplashResponse:
         """Convert the UnsplashPhoto object to a UnsplashResponse object.
@@ -47,9 +47,9 @@ class UnsplashPhoto:
         return UnsplashResponse(
             url=self.url,
             blur_hash=self.blur_hash,
-            city=self.city,
-            country=self.country,
+            location=self.location,
             photographer=self.photographer,
+            photographer_url=self.photographer_url,
             description=self.description,
             color=self.color,
             light_text=self.light_text,
@@ -58,6 +58,8 @@ class UnsplashPhoto:
     @property
     def light_text(self) -> str:
         """Get whether the text on top of the image should be light or dark."""
+        if self.color is None:
+            return False
         # Convert the hex color to rgb
         rgb = tuple(int(self.color[i : i + 2], 16) for i in (1, 3, 5))
         # Calculate the luminance
@@ -113,7 +115,10 @@ class UnsplashService:
     async def _requestPhoto(self) -> UnsplashPhoto:
         """Get a random photo from unsplash."""
         logging.info("Requesting photo from unsplash")
-        query = "https://api.unsplash.com/photos/random?topics=textures-patterns"
+
+        selected_query = random.choice(self._settings.query)
+        query = f"https://api.unsplash.com/photos/random?query={selected_query}"
+
         headers = {
             "Accept-Version": "v1",
             "Authorization": f"Client-ID {self._settings.api_key}",
@@ -124,15 +129,7 @@ class UnsplashService:
 
         if response.status != 200:
             logging.error(f"Unsplash API returned status code {response.status}")
-            return UnsplashResponse(
-                url=None,
-                blur_hash=None,
-                city=None,
-                country=None,
-                photographer=None,
-                description=None,
-                color=None,
-            )
+            return
 
         logging.info("Awaiting response from unsplash")
         data = await response.json()
@@ -142,9 +139,9 @@ class UnsplashService:
             "color": data["color"],
             "url": data["urls"]["regular"],
             "blur_hash": data["blur_hash"],
-            "city": data["location"]["city"],
-            "country": data["location"]["country"],
-            "photographer": data["user"]["name"],
+            "location": data["location"]["name"],
+            "photographer": data["user"]["username"],
+            "photographer_url": data["user"]["links"]["html"],
             "description": data["description"],
         }
 
