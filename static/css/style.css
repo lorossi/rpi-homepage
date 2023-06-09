@@ -1,6 +1,19 @@
 @font-face {
-  font-family: Roboto-Thin;
-  src: url("Roboto-Thin.ttf");
+  font-family: Roboto-Light;
+  src: url("Roboto-Light.ttf");
+}
+
+.light-text {
+  color: var(--white);
+}
+
+.dark-text {
+  color: var(--black);
+}
+
+.blur {
+  filter: blur(10px);
+  transform: scale(1.1);
 }
 
 html {
@@ -10,8 +23,7 @@ html {
 body {
   overflow: hidden;
   margin: 0;
-  font-family: Roboto-Thin;
-  color: var(--text-color);
+  font-family: Roboto-Light;
 }
 
 body * {
@@ -35,6 +47,16 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .top {
