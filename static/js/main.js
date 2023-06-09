@@ -28,12 +28,14 @@ const setBackground = async () => {
   const photographer = document.querySelector(".credits .photographer a");
   const location = document.querySelector(".credits .location");
 
-  photographer.textContent = image.photographer;
+  photographer.textContent = `photo by ${image.photographer}`;
   photographer.href = image.photographer_url;
   location.textContent = image.location;
 
   // set background description
-  // TODO
+  const description = document.querySelector(".description");
+
+  description.textContent = image.description;
 };
 
 // loads date into container
@@ -72,6 +74,30 @@ const setWeather = async () => {
   }
 };
 
+// toggles blur on background
+const toggleBlur = (e) => {
+  const background = document.querySelector(".background");
+  const blurred = background.classList.contains("blur");
+  const content = document.querySelector(".content");
+
+  if (blurred) {
+    // remove the blur
+    background.classList.replace("blur", "blur-transition");
+    // hide the page content
+    content.classList.add("hidden");
+    // change the button text
+    e.target.textContent = "hide image";
+  } else {
+    // add the blur
+    background.classList.replace("blur-transition", "blur");
+    background.classList.add("blur-transition");
+    // show the page content
+    content.classList.remove("hidden");
+    // change the button text
+    e.target.textContent = "view image";
+  }
+};
+
 // makes a request to an url
 const makeRequest = async (url, method = "GET") => {
   const options = {
@@ -92,6 +118,9 @@ const main = () => {
   setInterval(setDate, 1000);
   // update weather every 5 minutes
   setInterval(setWeather, 300000);
+
+  // add event listener for view image
+  document.querySelector(".view-image").addEventListener("click", toggleBlur);
 };
 
 document.addEventListener("DOMContentLoaded", () => {

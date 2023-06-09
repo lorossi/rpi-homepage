@@ -13,7 +13,15 @@
 
 .blur {
   filter: blur(10px);
-  transform: scale(1.1);
+  transform: scale(1.2);
+}
+
+.blur-transition {
+  transition: filter 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 html {
@@ -134,9 +142,20 @@ a {
 }
 
 .credits {
-  font-size: var(--credits-size);
   position: absolute;
   top: 0;
   left: 0;
+  font-size: var(--credits-size);
+  padding: var(--credits-size);
+}
+
+.view-image {
+  user-select: none;
+  text-decoration: underline;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: var(--credits-size);
   padding: var(--credits-size);
 }
