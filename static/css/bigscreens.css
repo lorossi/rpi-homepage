@@ -10,4 +10,8 @@
     justify-items: center;
     justify-content: center;
   }
+
+  .credits {
+    padding: calc(var(--text-size) / 2);
+  }
 }

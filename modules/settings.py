@@ -69,4 +69,5 @@ class UnsplashSettings(Settings):
     """Settings for the unsplash module."""
 
     api_key: str
+    query: list[str]
     cache_duration: int

@@ -25,7 +25,13 @@ const setBackground = async () => {
   }
 
   // set background credits
-  // TODO
+  const photographer = document.querySelector(".credits .photographer a");
+  const location = document.querySelector(".credits .location");
+
+  photographer.textContent = image.photographer;
+  photographer.href = image.photographer_url;
+  location.textContent = image.location;
+
   // set background description
   // TODO
 };
