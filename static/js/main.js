@@ -24,18 +24,22 @@ const setBackground = async () => {
     page.classList.remove("light-text");
   }
 
-  // set background credits
+  // set background photographer credit
   const photographer = document.querySelector(".credits .photographer a");
-  const location = document.querySelector(".credits .location");
+  photographer.textContent = `photo by ${image.photographer} (via Unsplash)`;
+  photographer.href = `${image.photographer_url}?utm_source=rpi-homepage&utm_medium=referral`;
 
-  photographer.textContent = `photo by ${image.photographer}`;
-  photographer.href = image.photographer_url;
-  location.textContent = image.location;
+  // set background location
+  if (image.location) {
+    const location = document.querySelector(".credits .location");
+    location.textContent = image.location;
+  }
 
   // set background description
-  const description = document.querySelector(".description");
-
-  description.textContent = image.description;
+  if (image.description) {
+    const description = document.querySelector(".description");
+    description.textContent = image.description;
+  }
 };
 
 // loads date into container
