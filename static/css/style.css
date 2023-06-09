@@ -149,6 +149,10 @@ a {
   padding: var(--credits-size);
 }
 
+.credits .description {
+  visibility: hidden;
+}
+
 .view-image {
   user-select: none;
   text-decoration: underline;
