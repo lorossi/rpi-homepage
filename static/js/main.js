@@ -10,10 +10,10 @@ const setBackground = async () => {
 
   // set background as solid color
   background.style.backgroundColor = image.color;
-  // blur background
-  background.classList.add("blur");
   // set background
   background.style.backgroundImage = `url(${image.url})`;
+  // blur background
+  background.classList.add("blur");
 
   // set text color
   if (image.light_text) {
@@ -77,22 +77,29 @@ const setWeather = async () => {
 // toggles blur on background
 const toggleBlur = (e) => {
   const background = document.querySelector(".background");
+  const content = document.querySelectorAll(".content div");
   const blurred = background.classList.contains("blur");
-  const content = document.querySelector(".content");
 
   if (blurred) {
     // remove the blur
-    background.classList.replace("blur", "blur-transition");
+    background.classList.remove("blur");
+    background.classList.add("unblur");
     // hide the page content
-    content.classList.add("hidden");
+    content.forEach((div) => {
+      div.classList.remove("show");
+      div.classList.add("hide");
+    });
     // change the button text
     e.target.textContent = "hide image";
   } else {
     // add the blur
-    background.classList.replace("blur-transition", "blur");
-    background.classList.add("blur-transition");
+    background.classList.remove("unblur");
+    background.classList.add("blur");
     // show the page content
-    content.classList.remove("hidden");
+    content.forEach((div) => {
+      div.classList.remove("hide");
+      div.classList.add("show");
+    });
     // change the button text
     e.target.textContent = "view image";
   }

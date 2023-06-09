@@ -12,15 +12,37 @@
 }
 
 .blur {
-  filter: blur(10px);
+  transition-property: filter, transform;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
+
+  filter: blur(var(--blur-radius)) saturate(0.75) grayscale(0.1);
   transform: scale(1.2);
 }
 
-.blur-transition {
-  transition: filter 0.5s ease-in-out, transform 0.5s ease-in-out;
+.unblur {
+  transition-property: filter, transform;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
+
+  filter: initial;
+  transform: initial;
 }
 
-.hidden {
+.show {
+  transition-duration: 500ms;
+  transition-property: opacity, visibility;
+  transition-timing-function: ease-in-out;
+  opacity: 1;
+  visibility: visible;
+}
+
+.hide {
+  transition-duration: 500ms;
+  transition-property: opacity, visibility;
+  transition-timing-function: ease-in-out;
+
+  opacity: 0;
   visibility: hidden;
 }
 
