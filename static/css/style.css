@@ -125,5 +125,5 @@ a {
 }
 
 .links a:hover {
-  filter: invert(1);
+  color: var(--gray);
 }
