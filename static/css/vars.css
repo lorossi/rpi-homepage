@@ -1,6 +1,6 @@
 :root {
   --white: rgb(240, 240, 240);
-  --black: rgb(0, 0, 0);
+  --black: rgb(20, 20, 20);
 }
 
 @media only screen and (max-width: 768px) {
