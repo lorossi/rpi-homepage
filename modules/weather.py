@@ -75,6 +75,7 @@ class Weather:
 class WeatherService:
     """WeatherService class, used to represent the weather service."""
 
+    _settings_path: str
     _settings: WeatherSettings
     _cached_weather: Weather
     _cached_time: float
@@ -83,7 +84,7 @@ class WeatherService:
         """Instantiate a new Weather object."""
         logging.info("Initializing WeatherService")
         self._settings_path = settings_path
-        # set the cached time to 0 so that the weather is fetched on the first request
+        # set the time the weather was cached to 0
         self._cached_time = 0
         self._cached_weather = None
 
