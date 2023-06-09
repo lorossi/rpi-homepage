@@ -62,3 +62,11 @@ class WeatherSettings(Settings):
     city: str
     language: str
     cache_duration: int
+
+
+@dataclass
+class UnsplashSettings(Settings):
+    """Settings for the unsplash module."""
+
+    api_key: str
+    cache_duration: int
