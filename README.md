@@ -68,7 +68,7 @@ To use this script, you have to:
 1. Rename `settings.example.toml` to `settings.toml` and complete it with all the necessary information
    - api keys for OpenWeather and Unsplash are needed
 1. Rename `links.example.toml` to `links.toml` and edit it until it fits all your needs
-1. Customize the `greetings.toml` file to your liking
+1. Rename the file `greetings.example.toml` to `greetings.toml` and edit it until it fits all your needs
 1. Go back to the main folder
 1. Create a virtual environment with `python3 -m venv venv`
 1. Activate the virtual environment with `source venv/bin/activate`
