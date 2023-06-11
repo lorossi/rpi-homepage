@@ -26,7 +26,7 @@ The webpage is completely scalable as I have tested it on many devices and scree
 This whole backend is coded in Python using the Fastapi framework.
 I moved from Flask to Fastapi because the GitHub dependency bot was complaining about some security issues in the Flask codebase, I could not find a way to structure the code in an OOP style.
 
-The backend script is supported by a `Server` class that I copied from another project of mine (I swear, I'll make it public one day).
+The backend script is supported by a `Server` class that I copied from another project of mine *(I swear, I'll make it public one day)*.
 It wraps the Fastapi app making it easier to add routes and endpoints.
 
 The front end is written in vanilla JS.
@@ -60,6 +60,7 @@ The code supports multi-language for weather forecasts.
 The base code is in Italian. To set the interface into a foreign *(well, for me at least)* language, you have to change the parameter inside the *settings.json* file.
 
 ## Installation
+
 To use this script, you have to:
 
 1. Clone or download this repo on your computer
