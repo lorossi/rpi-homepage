@@ -1,7 +1,9 @@
 """Settings for the server module."""
 from __future__ import annotations
+
 from dataclasses import dataclass
-import tomllib
+
+import toml
 
 
 class Settings:
@@ -33,14 +35,14 @@ class Settings:
             Settings: The settings object.
         """
         try:
-            with open(path, "rb") as f:
-                toml_data = tomllib.load(f)
+            with open(path, "r") as f:
+                toml_data = toml.load(f)
                 if class_name is not None:
                     return cls(**toml_data[class_name])
                 else:
                     return cls(**toml_data)
 
-        except (FileNotFoundError, tomllib.TOMLDecodeError):
+        except (FileNotFoundError, toml.TomlDecodeError):
             return cls()
 
 
