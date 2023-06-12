@@ -132,7 +132,7 @@ class UnsplashService:
 
         if response.status != 200:
             logging.error(f"Unsplash API returned status code {response.status}")
-            return
+            raise Exception(f"Unsplash API returned an error: {response.status}")
 
         logging.info("Awaiting response from unsplash")
         data = await response.json()

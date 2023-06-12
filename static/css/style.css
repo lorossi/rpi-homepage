@@ -102,7 +102,8 @@ a {
 .bottom {
   padding: calc(var(--text-size));
   border-radius: var(--blur-radius);
-  backdrop-filter: blur(var(--blur-radius)) grayscale(0.5) (white, transparent);
+  backdrop-filter: blur(var(--blur-radius)) grayscale(0.5)
+    radial-gradient(transparent, var(--black));
 }
 
 .top {
