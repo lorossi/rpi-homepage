@@ -16,13 +16,18 @@ const setBackground = async () => {
   background.classList.add("blur");
 
   // set text color
+  let to_add, to_remove;
   if (image.light_text) {
-    page.classList.add("light-text");
-    page.classList.remove("dark-text");
+    to_add = "light-text";
+    to_remove = "dark-text";
   } else {
-    page.classList.add("dark-text");
-    page.classList.remove("light-text");
+    to_add = "dark-text";
+    to_remove = "light-text";
   }
+  page.querySelectorAll("div").forEach((div) => {
+    div.classList.add(to_add);
+    div.classList.remove(to_remove);
+  });
 
   // set background photographer credit
   const photographer = document.querySelector(".credits .photographer a");
