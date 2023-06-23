@@ -73,12 +73,15 @@ class Server:
         )
         logging.info("Loaded settings")
 
-    def _setupGuvicorn(self, port: int) -> uvicorn.Server:
+    def _setupGuvicorn(self, port: int, logging_config: str) -> uvicorn.Server:
+        log_config = logging.config.fileConfig(logging_config)
+
         config = uvicorn.Config(
             self.app,
             host="0.0.0.0",
             port=port,
             loop="asyncio",
+            log_config=log_config,
         )
         return uvicorn.Server(config=config)
 
@@ -143,7 +146,9 @@ class Server:
         """
         logging.info(f"Adding static route {path} {directory}")
         self._fastapi_app.mount(
-            path, StaticFiles(directory=directory, html=html), name="static"
+            path,
+            StaticFiles(directory=directory, html=html),
+            name="static",
         )
         logging.info("Added static route")
 
@@ -202,7 +207,10 @@ class Server:
 
         port = self._settings.port
         logging.info(f"Starting server on port {port}")
-        server = self._setupGuvicorn(port)
+        server = self._setupGuvicorn(
+            port=port,
+            logging_config=self._settings.logging_config,
+        )
 
         self._scheduler.start()
         await server.serve()

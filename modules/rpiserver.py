@@ -179,4 +179,5 @@ class RPiServer(Server):
         local = self._isLocalIp(ip)
         logging.info(f"Client ip: {ip}. Local: {local}")
         u = await self._unsplash.getRandomPhoto()
+        logging.info(f"Unsplash response: {u}")
         return u.toResponse()

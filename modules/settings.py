@@ -54,6 +54,7 @@ class ServerSettings(Settings):
     gradients_path: str
     links_path: str
     greetings_path: str
+    logging_config: str
 
 
 @dataclass
