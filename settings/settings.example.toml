@@ -3,6 +3,7 @@ port = 1234
 gradients_path = ""
 links_path = ""
 greetings_path = ""
+logging_config = "settings/logging.toml"
 
 [WeatherService]
 api_key = ""
