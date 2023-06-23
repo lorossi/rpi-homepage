@@ -148,6 +148,7 @@ class UnsplashService:
             "photographer_url": data["user"]["links"]["html"],
             "description": data["description"],
         }
+        logging.info("Parsed response from unsplash")
 
         return UnsplashPhoto(**img_data)
 
