@@ -100,8 +100,6 @@ a {
 .top,
 .center,
 .bottom {
-  padding: calc(var(--text-size));
-  border-radius: var(--blur-radius);
   backdrop-filter: blur(var(--blur-radius)) grayscale(0.5)
     radial-gradient(transparent, var(--black));
 }
@@ -126,6 +124,8 @@ a {
   justify-content: center;
 
   text-align: center;
+  align-self: end;
+  padding: calc(var(--text-size));
 }
 
 .stats {
@@ -161,14 +161,21 @@ a {
 
 .links {
   font-size: var(--text-size);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  row-gap: calc(var(--text-size) / 4);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: var(--text-size);
 }
 
-.links a {
-  position: relative;
+.link {
+  align-self: center;
+}
+
+.link:nth-of-type(2n + 1) {
+  justify-self: end;
+}
+
+.link:nth-of-type(2n) {
+  justify-self: start;
 }
 
 .links a:hover {
