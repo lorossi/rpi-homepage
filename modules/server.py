@@ -112,7 +112,10 @@ class Server:
         logging.info("Removed schedule")
 
     def addRoute(
-        self, path: str, f: Callable, methods: list[str] | None = None
+        self,
+        path: str,
+        f: Callable,
+        methods: list[str] | None = None,
     ) -> None:
         """Add a route to the server.
 
@@ -173,7 +176,10 @@ class Server:
         logging.info("Added template folder")
 
     def generateTemplateResponse(
-        self, request: Request, template: str, **kwargs
+        self,
+        request: Request,
+        template: str,
+        **kwargs,
     ) -> HTMLResponse:
         """Generate a template.
 
@@ -216,9 +222,7 @@ class Server:
         await server.serve()
         logging.info("Server stopped")
 
-    def start(
-        self,
-    ) -> None:
+    def start(self) -> None:
         """Start the server synchronously."""
         asyncio.run(self.startAsync())
 
