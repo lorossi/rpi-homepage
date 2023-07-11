@@ -5,6 +5,7 @@ import logging
 import random
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Any
 
 import aiohttp
 import toml
@@ -108,12 +109,19 @@ class UnsplashService:
 
         self._settings = UnsplashSettings.fromDict(settings_data)
 
-    async def _asyncRequest(
-        self, url: str, headers: dict = None
-    ) -> aiohttp.ClientResponse:
+    async def _asyncRequestJSON(self, url: str, headers: dict = None) -> dict[str, Any]:
         """Request a response from a url."""
         async with aiohttp.ClientSession() as session:
-            return await session.get(url, headers=headers)
+            response = await session.get(url, headers=headers)
+            if response.status != 200:
+                logging.error(
+                    f"Request to {url} returned status code {response.status}"
+                )
+                raise Exception(
+                    f"Request to {url} returned status code {response.status}"
+                )
+
+            return await response.json()
 
     async def _requestPhoto(self) -> UnsplashPhoto:
         """Get a random photo from unsplash."""
@@ -128,25 +136,18 @@ class UnsplashService:
         }
 
         logging.info(f"Sending request to unsplash: {query}")
-        response = await self._asyncRequest(query, headers=headers)
-
-        if response.status != 200:
-            logging.error(f"Unsplash API returned status code {response.status}")
-            raise Exception(f"Unsplash API returned an error: {response.status}")
-
-        logging.info("Awaiting response from unsplash")
-        data = await response.json()
+        json_data = await self._asyncRequestJSON(query, headers=headers)
 
         logging.info("Parsing response from unsplash")
         img_data = {
-            "color": data["color"],
-            "url": data["urls"]["regular"],
-            "link": data["links"]["html"],
-            "blur_hash": data["blur_hash"],
-            "location": data["location"]["name"],
-            "photographer": data["user"]["username"],
-            "photographer_url": data["user"]["links"]["html"],
-            "description": data["description"],
+            "color": json_data["color"],
+            "url": json_data["urls"]["regular"],
+            "link": json_data["links"]["html"],
+            "blur_hash": json_data["blur_hash"],
+            "location": json_data["location"]["name"],
+            "photographer": json_data["user"]["username"],
+            "photographer_url": json_data["user"]["links"]["html"],
+            "description": json_data["description"],
         }
         logging.info("Parsed response from unsplash")
 
@@ -158,8 +159,13 @@ class UnsplashService:
         if elapsed_time > self._settings.cache_duration:
             # if the photo is older than the cache duration, request a new one
             logging.info("Requesting new photo from unsplash")
+            # save started time for logging purposes
+            started_time = datetime.now()
             # request the photo
             self._cached_photo = await self._requestPhoto()
+            # compute elapsed time
+            elapsed = (datetime.now() - started_time).total_seconds()
+            logging.info(f"Photo requested in {elapsed} seconds")
             # update the cached time
             self.cached_time = datetime.now().timestamp()
 
