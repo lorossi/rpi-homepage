@@ -57,7 +57,7 @@ class Link:
             str
         """
         if zerotier:
-            return self.url
+            return self.full_url
 
         return self.lan_url
 
@@ -76,7 +76,7 @@ class Link:
         if lan:
             properties["href"] = self.lan_url
         else:
-            properties["href"] = self.url
+            properties["href"] = self.full_url
 
         return properties
 
@@ -89,9 +89,14 @@ class Link:
         return f"http://{self._lan_ip}:{self._port}/{self._path}"
 
     @property
-    def url(self) -> str:
+    def full_url(self) -> str:
         """Get the url of the service on the network."""
         if self._path is None:
             return f"http://{self._ip}:{self._port}"
 
         return f"http://{self._ip}:{self._port}/{self._path}"
+
+    @property
+    def display_name(self) -> str:
+        """Get the displayed name of the service."""
+        return self._display_name
