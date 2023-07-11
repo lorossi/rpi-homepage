@@ -40,10 +40,23 @@ To accomplish this, I divided the page into 3 sections:
 
 1. the top section, displaying the time and a greeting message
 2. the middle section, displaying the weather forecast for the day
-3. the  bottom section, displaying the links to the services
+3. the bottom section, displaying the links to the services
 
 In the background, a random image is displayed.
 The images are fetched from [Unsplash](https://unsplash.com/), a website that provides images via a free API (for personal use).
+To prevent too many fetches, a link is cached for a length of time, customisable in the settings file.
+
+The catch is finding the correct image category to display: colourful and high-contrast images are not good for text readability.
+After a while, I have settled on the following categories:
+
+- "abstract"
+- "graffiti"
+- "scenery"
+- "set"
+- "wallpaper"
+
+These seem to be the best categories to display a nice image that doesn't interfere with the text on top of it.
+To guarantee even better readability, the image is blurred and desaturated, with higher effect around the text.
 
 The weather forecast is provided by [OpenWeather](https://openweathermap.org/), a free weather API.
 
