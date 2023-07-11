@@ -74,14 +74,12 @@ class Server:
         logging.info("Loaded settings")
 
     def _setupGuvicorn(self, port: int, logging_config: str) -> uvicorn.Server:
-        log_config = logging.config.fileConfig(logging_config)
-
         config = uvicorn.Config(
             self.app,
             host="0.0.0.0",
             port=port,
             loop="asyncio",
-            log_config=log_config,
+            log_config=logging_config,
         )
         return uvicorn.Server(config=config)
 
