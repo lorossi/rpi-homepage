@@ -64,7 +64,12 @@ class RPiServer(Server):
         logging.info("Loading links")
         with open(self._settings.links_path, "r") as f:
             links_dict = toml.load(f)
-        self._links = [Link.fromDict(link) for link in links_dict["Links"]]
+
+        self._links = sorted(
+            [Link.fromDict(link) for link in links_dict["Links"]],
+            key=lambda link: len(link.display_name),
+            reverse=True,
+        )
 
         logging.info("Loading greetings")
         with open(self._settings.greetings_path, "r") as f:
