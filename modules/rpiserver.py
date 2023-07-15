@@ -41,8 +41,8 @@ class RPiServer(Server):
         logging.info("Initializing RPiServer")
         self._settings_path = settings_path
 
-        self.loadSettings()
-        self.loadAttributes()
+        self._settings = self.loadSettings()
+        self._links, self._greetings = self.loadAttributes()
 
         logging.info("Initializing RPiServer routes")
         self.addStaticRoute("/static", "static")
@@ -57,7 +57,7 @@ class RPiServer(Server):
         logging.info("Initializing unsplash")
         self._unsplash = UnsplashService()
 
-    def loadAttributes(self) -> None:
+    def loadAttributes(self) -> tuple[list[Link], list[Greeting]]:
         """Load the gradients and links from the settings file."""
         logging.info("Loading RPiServer attributes")
 
@@ -65,7 +65,7 @@ class RPiServer(Server):
         with open(self._settings.links_path, "r") as f:
             links_dict = toml.load(f)
 
-        self._links = sorted(
+        links = sorted(
             [Link.fromDict(link) for link in links_dict["Links"]],
             key=lambda link: len(link.display_name),
             reverse=True,
@@ -74,9 +74,12 @@ class RPiServer(Server):
         logging.info("Loading greetings")
         with open(self._settings.greetings_path, "r") as f:
             greetings_list = toml.load(f)
-        self._greetings = [
+
+        greetings = [
             Greeting.fromDict(greeting) for greeting in greetings_list["Greetings"]
         ]
+
+        return links, greetings
 
     def _isLocalIp(self, ip: str) -> bool:
         """Check if the ip is local.

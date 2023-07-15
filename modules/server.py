@@ -62,16 +62,16 @@ class Server:
         cls._router = APIRouter()
         cls._scheduler = Scheduler()
         cls._schedules = {}
-        cls._settings_path = "settings.toml"
 
-    def loadSettings(self) -> None:
+    def loadSettings(self, settings_path: str) -> ServerSettings:
         """Load the settings."""
         logging.info("Loading settings")
-        self._settings = ServerSettings.fromToml(
-            self._settings_path,
+        settings = ServerSettings.fromToml(
+            settings_path,
             self.__class__.__name__,
         )
         logging.info("Loaded settings")
+        return settings
 
     def _setupGuvicorn(self, port: int, logging_config: str) -> uvicorn.Server:
         config = uvicorn.Config(
@@ -209,11 +209,11 @@ class Server:
             logging.warning("Settings not loaded, loading now")
             self.loadSettings()
 
-        port = self._settings.port
+        port = self._settings.Server
         logging.info(f"Starting server on port {port}")
         server = self._setupGuvicorn(
             port=port,
-            logging_config=self._settings.logging_config,
+            logging_config=self._settings.Server.logging_config,
         )
 
         self._scheduler.start()
