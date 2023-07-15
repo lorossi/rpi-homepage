@@ -39,10 +39,10 @@ class RPiServer(Server):
             RPiServer
         """
         logging.info("Initializing RPiServer")
-        self.settings_path = settings_path
+        self._settings_path = settings_path
 
         self.loadSettings()
-        self._loadAttributes()
+        self.loadAttributes()
 
         logging.info("Initializing RPiServer routes")
         self.addStaticRoute("/static", "static")
@@ -57,7 +57,7 @@ class RPiServer(Server):
         logging.info("Initializing unsplash")
         self._unsplash = UnsplashService()
 
-    def _loadAttributes(self) -> None:
+    def loadAttributes(self) -> None:
         """Load the gradients and links from the settings file."""
         logging.info("Loading RPiServer attributes")
 
