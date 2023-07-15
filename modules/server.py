@@ -41,7 +41,7 @@ class Server:
     _scheduler: Scheduler
     _templates: Jinja2Templates
     _settings: ServerSettings
-    settings_path: str
+    _settings_path: str
     _schedules: dict[Callable, Job]
 
     def __init__(self) -> Server:
@@ -62,13 +62,13 @@ class Server:
         cls._router = APIRouter()
         cls._scheduler = Scheduler()
         cls._schedules = {}
-        cls.settings_path = "settings.toml"
+        cls._settings_path = "settings.toml"
 
     def loadSettings(self) -> None:
         """Load the settings."""
         logging.info("Loading settings")
         self._settings = ServerSettings.fromToml(
-            self.settings_path,
+            self._settings_path,
             self.__class__.__name__,
         )
         logging.info("Loaded settings")
