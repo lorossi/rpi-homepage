@@ -63,11 +63,11 @@ class Server:
         cls._scheduler = Scheduler()
         cls._schedules = {}
 
-    def loadSettings(self, settings_path: str) -> ServerSettings:
+    def loadSettings(self) -> ServerSettings:
         """Load the settings."""
         logging.info("Loading settings")
         settings = ServerSettings.fromToml(
-            settings_path,
+            self._settings_path,
             self.__class__.__name__,
         )
         logging.info("Loaded settings")
@@ -209,11 +209,11 @@ class Server:
             logging.warning("Settings not loaded, loading now")
             self.loadSettings()
 
-        port = self._settings.Server
+        port = self._settings.port
         logging.info(f"Starting server on port {port}")
         server = self._setupGuvicorn(
             port=port,
-            logging_config=self._settings.Server.logging_config,
+            logging_config=self._settings.logging_config,
         )
 
         self._scheduler.start()
