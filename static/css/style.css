@@ -46,12 +46,7 @@
   visibility: hidden;
 }
 
-html {
-  height: 100%;
-}
-
 body {
-  height: 100%;
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -73,23 +68,25 @@ a {
   top: 0;
   left: 0;
 
-  width: 100vw;
-  height: 100vh;
+  width: calc(var(--vw, 1vw) * 100);
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 .background {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+
   background-repeat: no-repeat;
   background-size: cover;
+
+  width: calc(var(--vw, 1vw) * 100);
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 .content {
-  width: 100vw;
-  height: 100vh;
+  width: calc(var(--vw, 1vw) * 100);
+  height: calc(var(--vh, 1vh) * 100);
 
   display: grid;
   grid-template-rows: 1.5fr 1fr 1.5fr;
