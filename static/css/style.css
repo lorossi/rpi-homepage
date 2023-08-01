@@ -127,7 +127,7 @@ a {
 
   text-align: center;
   align-self: end;
-  padding: calc(var(--text-size));
+  padding: var(--text-size);
 }
 
 .stats {
