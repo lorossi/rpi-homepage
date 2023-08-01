@@ -1,6 +1,6 @@
-aiohttp==3.8.4
+aiohttp==3.8.5
 apscheduler==3.10.1
-fastapi==0.97.0
+fastapi==0.100.1
 toml==0.10.2
-uvicorn==0.22.0
+uvicorn==0.23.2
 Jinja2==3.1.2
