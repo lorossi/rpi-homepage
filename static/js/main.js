@@ -148,7 +148,7 @@ const set_vw_vh = () => {
   document.documentElement.style.setProperty("--vw", `${vw}px`);
 };
 
-document.addEventListener("resize", set_vw_vh);
+window.addEventListener("resize", set_vw_vh);
 document.addEventListener("DOMContentLoaded", () => {
   set_vw_vh();
   main();
