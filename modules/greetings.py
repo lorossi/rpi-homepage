@@ -1,4 +1,5 @@
 """This module contains the Greeting class, used to represent a greeting."""
+
 from __future__ import annotations
 
 

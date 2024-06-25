@@ -1,4 +1,5 @@
 """This module contains the Link class, used to represent a link to a service."""
+
 from __future__ import annotations
 
 
