@@ -61,7 +61,7 @@ class RPiServer(Server):
         self._unsplash = UnsplashService()
 
     def loadAttributes(self) -> tuple[list[Link], list[Greeting]]:
-        """Load the gradients and links from the settings file."""
+        """Load the links from the settings file."""
         logging.info("Loading RPiServer attributes")
 
         logging.info("Loading links")
