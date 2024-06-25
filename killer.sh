@@ -8,7 +8,7 @@ do
     if [ ! -z $pid ]
     then
         # Kill the process
-        echo -e "has PID: $pid. Killing it..."
+        echo -e "$file has PID: $pid. Killing it..."
         kill $pid
     else
         # If the process is not running, print a message
