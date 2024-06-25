@@ -2,7 +2,7 @@
 port = 1234
 links_path = "settings/links.toml"
 greetings_path = "settings/greetings.toml"
-logging_config = "settings/logging.toml"
+logging_config = "settings/logging.ini"
 
 [WeatherService]
 api_key = ""
