@@ -12,6 +12,6 @@ do
         kill $pid
     else
         # If the process is not running, print a message
-        echo -e "file is not running."
+        echo -e "$file is not running."
     fi
 done
