@@ -1,4 +1,5 @@
 """Module for the Server class."""
+
 from __future__ import annotations
 
 import asyncio
@@ -66,10 +67,15 @@ class Server:
     def loadSettings(self) -> ServerSettings:
         """Load the settings."""
         logging.info("Loading settings")
-        settings = ServerSettings.fromToml(
-            self._settings_path,
-            self.__class__.__name__,
-        )
+        try:
+            settings = ServerSettings.fromToml(
+                self._settings_path,
+                self.__class__.__name__,
+            )
+        except (FileNotFoundError, TypeError):
+            logging.error("Settings file not found")
+            raise
+
         logging.info("Loaded settings")
         return settings
 

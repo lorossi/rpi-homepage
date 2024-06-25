@@ -1,4 +1,5 @@
 """Unsplash module, used to get a random photo from unsplash."""
+
 from __future__ import annotations
 
 import logging

@@ -1,4 +1,5 @@
 """Module for the RPiServer class."""
+
 from __future__ import annotations
 
 import logging
@@ -15,6 +16,8 @@ from modules.weather import WeatherResponse, WeatherService
 
 
 class APIException(HTTPException):
+    """APIException class, used to represent an API exception."""
+
     message: str
 
 

@@ -1,4 +1,5 @@
 """Module for the WeatherService class."""
+
 from __future__ import annotations
 
 import logging
