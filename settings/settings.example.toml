@@ -1,8 +1,7 @@
 [RPiServer]
 port = 1234
-gradients_path = ""
-links_path = ""
-greetings_path = ""
+links_path = "settings/links.toml"
+greetings_path = "settings/greetings.toml"
 logging_config = "settings/logging.toml"
 
 [WeatherService]
