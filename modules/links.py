@@ -51,7 +51,7 @@ class Link:
         """Get the full url of the service.
 
         Args:
-            zerotier (bool, optional): True if the service is accessed gradients_path
+            zerotier (bool, optional): True if the service is accessed
                 through the ZeroTier network. Defaults to False.
 
         Returns:
