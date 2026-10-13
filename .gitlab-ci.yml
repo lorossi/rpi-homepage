@@ -1,0 +1,40 @@
+stages:
+  - lint
+
+variables:
+  UV_CACHE_DIR: .uv-cache
+  UV_LINK_MODE: copy
+  UV_FROZEN: "1"
+
+.uv:
+  stage: lint
+  image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+  cache:
+    key:
+      files:
+        - uv.lock
+    paths:
+      - $UV_CACHE_DIR
+  before_script:
+    - uv sync --group dev
+  after_script:
+    - uv cache prune --ci
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS == null
+
+ruff:
+  extends: .uv
+  script:
+    - uv run ruff check --output-format=gitlab --output-file=gl-code-quality-report.json . || (uv run ruff check . && false)
+    - uv run ruff format --check --diff .
+  artifacts:
+    when: always
+    reports:
+      codequality: gl-code-quality-report.json
+
+ty:
+  extends: .uv
+  script:
+    - uv run ty check
