@@ -83,10 +83,8 @@ To use this script, you have to:
 1. Rename `links.example.toml` to `links.toml` and edit it until it fits all your needs
 1. Rename the file `greetings.example.toml` to `greetings.toml` and edit it until it fits all your needs
 1. Go back to the main folder
-1. Create a virtual environment with `python3 -m venv venv`
-1. Activate the virtual environment with `source venv/bin/activate`
-1. Install the required packages with `pip install -r requirements.txt`
-1. Run the script with `python3 rpi-homepage.py`
+1. Install the dependencies with `uv sync` *(requires [uv](https://docs.astral.sh/uv/))*
+1. Run the script with `uv run rpi-homepage.py`
 1. Open your browser and navigate to `http://localhost:1234` *(or whatever port you set in the settings file)*
 1. Done!
 
