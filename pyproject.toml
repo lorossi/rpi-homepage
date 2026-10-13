@@ -1,0 +1,20 @@
+[project]
+name = "rpi-homepage"
+version = "0.1.0"
+description = "A FastAPI-based dashboard for my Raspberry Pi"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.14"
+dependencies = [
+    "aiohttp==3.14.5",
+    "APScheduler==3.11.3",
+    "fastapi==0.143.0",
+    "pydantic==2.14.1",
+    "starlette==1.8.0",
+    "toml==0.10.2",
+    "uvicorn==0.54.0",
+    "Jinja2==3.1.6",
+]
+
+[dependency-groups]
+dev = ["ruff", "ty"]

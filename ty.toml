@@ -1,0 +1,10 @@
+[environment]
+python-version = "3.14"
+
+[rules]
+possibly-unresolved-reference = "error"
+possibly-missing-attribute = "error"
+possibly-missing-import = "error"
+redundant-cast = "error"
+unused-ignore-comment = "error"
+deprecated = "error"
