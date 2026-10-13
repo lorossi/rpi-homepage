@@ -1,0 +1,87 @@
+[[Links]]
+display_name = "Transmission"
+name = "transmission"
+port = "9091"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = ""
+
+[[Links]]
+display_name = "Perf. Monitor"
+name = "performancesmonitor"
+ip = "10.242.77.126"
+lan_ip = "192.168.1.182"
+port = "4567"
+path = ""
+
+[[Links]]
+display_name = "Plex"
+name = "plex"
+port = "32400"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = "web/index.html"
+
+[[Links]]
+display_name = "Pi-hole"
+name = "pihole"
+port = "8080"
+ip = "10.242.77.126"
+lan_ip = "192.168.1.182"
+path = "admin/"
+
+[[Links]]
+display_name = "Prowlarr"
+name = "prowlarr"
+port = "9696"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = ""
+
+[[Links]]
+display_name = "Radarr"
+name = "radarr"
+port = "7878"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = ""
+
+[[Links]]
+display_name = "Sonarr"
+name = "sonarr"
+port = "8989"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = ""
+
+[[Links]]
+display_name = "Aria2"
+name = "aria2"
+port = "8888"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = ""
+
+[[Links]]
+display_name = "Jellyfin"
+name = "jellyfin"
+port = "8096"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = ""
+
+[[Links]]
+display_name = "Sync"
+name = "sync"
+port = "7777"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = ""
+
+[[Links]]
+display_name = "File Browser"
+name = "filebrowser"
+port = "8023"
+ip = "10.242.139.2"
+lan_ip = "192.168.1.106"
+path = ""

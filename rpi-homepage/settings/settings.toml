@@ -1,0 +1,16 @@
+[RPiServer]
+port = 1234
+links_path = "settings/links.toml"
+greetings_path = "settings/greetings.toml"
+logging_config = "settings/logging.ini"
+
+[WeatherService]
+api_key = ""
+city = ""
+language = ""
+cache_duration = 300
+
+[UnsplashService]
+api_key = ""
+query = []
+cache_duration = 30
