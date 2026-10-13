@@ -1,205 +1,174 @@
-"""Module for the RPiServer class."""
+"""Module for the homepage web app."""
 
-from __future__ import annotations
-
-import logging
-from datetime import datetime
-from pathlib import Path
+import ipaddress
+from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
 import toml
+import uvicorn
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse, RedirectResponse, Response
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from loguru import logger
+from starlette.exceptions import HTTPException
 
-from modules.greetings import Greeting
-from modules.links import Link
-from modules.server import HTTPException, Request, Response, Server
-from modules.unsplash import UnsplashResponse, UnsplashService
-from modules.weather import WeatherResponse, WeatherService
+from modules.icons import IconService
+from modules.settings import ServerSettings
+from modules.system import SystemResponse, SystemService
 
 if TYPE_CHECKING:
-    from modules.settings import ServerSettings
+    from collections.abc import AsyncGenerator, Iterable
 
-logger = logging.getLogger(__name__)
-
-
-class APIException(HTTPException):
-    """APIException class, used to represent an API exception."""
-
-    message: str
+IPNetwork = ipaddress.IPv4Network | ipaddress.IPv6Network
 
 
-class RPiServer(Server):
-    """RPiServer class, used to represent the server."""
+def load_settings(path: str) -> ServerSettings:
+    """Load the settings from the `RPiServer` table of a toml file.
 
-    _settings: ServerSettings
-    _links: list[Link]
-    _greetings: list[Greeting]
+    Args:
+        path (str): Path to the settings file.
 
-    _weather: WeatherService
-    _unsplash: UnsplashService
+    Returns:
+        ServerSettings
+    """
+    logger.info("Loading settings from {}", path)
+    try:
+        settings = ServerSettings.from_toml(path, "RPiServer")
+    except FileNotFoundError, toml.TomlDecodeError:
+        logger.exception("Could not load settings from {}", path)
+        raise
 
-    def __init__(self, settings_path: str = "settings/settings.toml") -> None:
-        """Create a RPiServer object.
+    logger.info("Loaded {} links", len(settings.links))
+    return settings
 
-        Args:
-            settings_path (str, optional): Path to the settings file.
-            Defaults to "settings/settings.toml".
-        """
-        logger.info("Initializing RPiServer")
-        self._settings_path = settings_path
 
-        self._settings = self.load_settings()
-        self._links, self._greetings = self.load_attributes()
+def is_local_ip(ip: str, networks: Iterable[IPNetwork]) -> bool:
+    """Check if the ip belongs to one of the local networks.
 
-        logger.info("Initializing RPiServer routes")
-        self.add_static_route("/static", "static")
-        self.add_template_folder("templates")
-        self.add_route("/", self._index_page)
-        self.add_route("/get/weather", self._weather_api)
-        self.add_route("/get/image", self._unsplash_api)
-        self.add_http_exception_route(self._error_page)
+    Args:
+        ip (str): IP address
+        networks (Iterable[IPNetwork]): Local networks
 
-        logger.info("Initializing weather")
-        self._weather = WeatherService()
-        logger.info("Initializing unsplash")
-        self._unsplash = UnsplashService()
+    Returns:
+        bool: False if the ip is not valid
+    """
+    try:
+        address = ipaddress.ip_address(ip)
+    except ValueError:
+        return False
+    return any(address in net for net in networks)
 
-    def load_attributes(self) -> tuple[list[Link], list[Greeting]]:
-        """Load the links from the settings file."""
-        logger.info("Loading RPiServer attributes")
 
-        logger.info("Loading links")
-        with Path(self._settings.links_path).open() as f:
-            links_dict = toml.load(f)
+def create_app(settings: ServerSettings) -> FastAPI:
+    """Create the homepage app.
 
-        links = sorted(
-            [Link.from_dict(link) for link in links_dict["Links"]],
-            key=lambda link: len(link.display_name),
-            reverse=True,
-        )
+    Args:
+        settings (ServerSettings): The server settings.
 
-        logger.info("Loading greetings")
-        with Path(self._settings.greetings_path).open() as f:
-            greetings_list = toml.load(f)
+    Returns:
+        FastAPI
+    """
+    local_networks = tuple(ipaddress.ip_network(n) for n in settings.local_networks)
+    logger.info("Local networks: {}", local_networks)
+    system = SystemService(settings.system)
+    icons = IconService(
+        settings.icons,
+        (link.icon for link in settings.links if link.icon),
+    )
+    templates = Jinja2Templates(directory="templates")
+    scheduler = AsyncIOScheduler()
 
-        greetings = [
-            Greeting.from_dict(greeting) for greeting in greetings_list["Greetings"]
-        ]
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:
+        # awaited before the server starts serving requests
+        await icons.prefetch()
+        scheduler.add_job(system.sample, "interval", seconds=system.sample_interval)
+        # retry the icons that could not be downloaded (no-op once all loaded)
+        scheduler.add_job(icons.prefetch, "interval", seconds=icons.retry_interval)
+        scheduler.start()
+        yield
+        scheduler.shutdown()
 
-        return links, greetings
+    app = FastAPI(lifespan=lifespan)
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
-    def _is_local_ip(self, ip: str) -> bool:
-        """Check if the ip is local.
-
-        Args:
-            ip (str): IP address
-
-        Returns:
-            bool
-        """
-        return ip.startswith(("192.168.1", "127.0.0"))
-
-    def _is_local_request(self, request: Request) -> bool:
-        """Check if the request comes from the local network, logging its ip.
-
-        Args:
-            request (Request): HTTP request
-
-        Returns:
-            bool
-        """
+    def is_local_request(request: Request) -> bool:
+        """Check if the request comes from the local network, logging its ip."""
         ip = request.client.host if request.client is not None else ""
-        local = self._is_local_ip(ip)
-        logger.info("Client ip: %s. Local: %s", ip, local)
+        local = is_local_ip(ip, local_networks)
+        logger.info("Client ip: {}. Local: {}", ip, local)
         return local
 
-    def _get_greeting(self) -> Greeting | None:
-        """Get a greeting.
-
-        Returns:
-            Greeting | None: the greeting for the current hour, if any
-        """
-        logger.info("Getting a greeting")
-        hour = datetime.now().astimezone().hour
-        for greeting in self._greetings:
-            if greeting.is_in_time(hour):
-                return greeting
-
-        return None
-
-    async def _index_page(self, request: Request) -> Response:
-        """Serve the index page.
-
-        Args:
-            request (Request): HTTP request
-
-        Returns:
-            Response
-        """
+    @app.get("/")
+    async def index_page(request: Request) -> Response:
+        """Serve the index page."""
         logger.info("Serving index page")
-        local = self._is_local_request(request)
+        local = is_local_request(request)
 
-        # format the links according to the request
-        # (either local or remote)
-        links = [link.get_properties_dict(lan=local) for link in self._links]
-        # get a greeting
-        greeting = self._get_greeting()
-        # return the page
-        return self.generate_template_response(
-            request=request,
-            template="index.html",
-            links=links,
-            greeting=greeting,
-        )
+        # format the links according to the request (either local or remote)
+        groups = {
+            category: [
+                link.get_properties_dict(lan=local, icon_markup=icons.get(link.icon))
+                for link in links
+            ]
+            for category, links in settings.grouped_links().items()
+        }
+        return templates.TemplateResponse(request, "index.html", {"groups": groups})
 
-    async def _error_page(self, request: Request, exception: HTTPException) -> Response:
+    @app.get("/get/system")
+    async def system_api(request: Request) -> SystemResponse:
+        """Serve the system api."""
+        logger.debug("Serving system api")
+        is_local_request(request)
+        return system.get_status()
+
+    @app.exception_handler(HTTPException)
+    async def error_page(request: Request, exception: HTTPException) -> Response:
         """Handle an HTTPException.
 
-        If the error is a 404, redirect to the index page.
-
-        Args:
-            request (Request): HTTP request
-            exception (HTTPException): HTTP exception
-
-        Returns:
-            Response
+        API requests get a JSON error, every other request is redirected
+        to the index page.
         """
-        logger.warning("Handling HTTPException: %s", exception)
+        logger.warning("Handling HTTPException: {}", exception)
 
         is_api_request = request.url.path.startswith("/get")
         error_code = exception.status_code
 
-        logger.info("Is API request: %s, Error code: %s", is_api_request, error_code)
+        logger.info("Is API request: {}, Error code: {}", is_api_request, error_code)
 
-        return self.generate_template_response(
-            request=request,
-            template="redirect.html",
-        )
+        if is_api_request:
+            return JSONResponse(
+                status_code=error_code,
+                content={"detail": exception.detail},
+            )
 
-    async def _weather_api(self, request: Request) -> WeatherResponse:
-        """Serve the weather api.
+        return RedirectResponse("/")
 
-        Args:
-            request (Request): HTTP request
+    return app
 
-        Returns:
-            WeatherResponse: Weather response
-        """
-        logger.info("Serving weather api")
-        self._is_local_request(request)
-        w = await self._weather.get_weather()
-        return w.to_response()
 
-    async def _unsplash_api(self, request: Request) -> UnsplashResponse:
-        """Serve the unsplash api.
+async def serve(settings_path: str = "settings/settings.toml") -> None:
+    """Load the settings and serve the homepage until stopped.
 
-        Args:
-            request (Request): HTTP request
-
-        Returns:
-            UnsplashResponse: Unsplash response
-        """
-        logger.info("Serving unsplash api")
-        self._is_local_request(request)
-        u = await self._unsplash.get_random_photo()
-        logger.info("Unsplash response: %s", u)
-        return u.to_response()
+    Args:
+        settings_path (str, optional): Path to the settings file.
+            Defaults to "settings/settings.toml".
+    """
+    settings = load_settings(settings_path)
+    config = uvicorn.Config(
+        create_app(settings),
+        host="0.0.0.0",  # noqa: S104 - the homepage is served to the whole LAN
+        port=settings.port,
+        loop="asyncio",
+        # logs are routed to loguru, see modules.logs
+        log_config=None,
+        # the client ip is taken from X-Forwarded-For only if the request
+        # comes from a trusted proxy
+        proxy_headers=bool(settings.forwarded_allow_ips),
+        forwarded_allow_ips=settings.forwarded_allow_ips,
+    )
+    logger.info("Starting server on port {}", settings.port)
+    await uvicorn.Server(config).serve()
+    logger.info("Server stopped")

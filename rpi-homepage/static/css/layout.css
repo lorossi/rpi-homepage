@@ -1,0 +1,23 @@
+.content {
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  padding: 8px 48px 32px;
+  display: grid;
+  /* the system column stretches to the bottom of the page */
+  grid-template-columns: minmax(0, 1fr) clamp(380px, 30vw, 520px);
+  align-items: stretch;
+  gap: 32px;
+}
+
+@media (max-width: 1024px) {
+  .content {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 8px 20px 24px;
+  }
+}

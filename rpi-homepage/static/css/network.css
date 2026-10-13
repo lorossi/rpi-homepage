@@ -1,0 +1,36 @@
+.rates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+}
+
+.rate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rate-icon {
+  display: flex;
+}
+
+.rate-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.rate-icon.down {
+  color: var(--data);
+}
+
+.rate-icon.up {
+  color: var(--data-alt);
+}
+
+.rate-value {
+  font-size: 20px;
+}
+
+.rate-value .unit {
+  font-size: 13px;
+}

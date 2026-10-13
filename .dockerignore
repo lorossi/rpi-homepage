@@ -1,0 +1,11 @@
+.git
+.venv
+.ruff_cache
+.uv-cache
+.vscode
+**/__pycache__
+**/*.log
+**/cache
+screenshots
+rpi-homepage/settings/*.toml
+!rpi-homepage/settings/*.example.toml
