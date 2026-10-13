@@ -1,12 +1,10 @@
 """This module contains the Greeting class, used to represent a greeting."""
 
-from __future__ import annotations
-
 
 class Greeting:
     """Greeting class, used to represent a greeting."""
 
-    def __init__(self, from_hour: int, to_hour: int, message: str) -> Greeting:
+    def __init__(self, from_hour: int, to_hour: int, message: str) -> None:
         """Greeting class, used to represent a greeting.
 
         Args:
@@ -21,7 +19,7 @@ class Greeting:
         self._to_hour = to_hour
         self._message = message
 
-    def isInTime(self, hour: int) -> bool:
+    def is_in_time(self, hour: int) -> bool:
         """Check if the current hour is in the greeting time.
 
         Args:
@@ -57,7 +55,7 @@ class Greeting:
         return self._message
 
     @staticmethod
-    def fromDict(dictionary: dict) -> Greeting:
+    def from_dict(dictionary: dict) -> Greeting:
         """Create a Greeting object from a dictionary.
 
         Args:

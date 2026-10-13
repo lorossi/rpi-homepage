@@ -2,41 +2,31 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 
+
+@dataclass(frozen=True, kw_only=True)
 class Link:
-    """Link class, used to represent a link to a service."""
+    """Link class, used to represent a link to a service.
 
-    def __init__(
-        self,
-        display_name: str,
-        name: str,
-        lan_ip: str,
-        ip: str,
-        port: str,
-        path: str = None,
-    ) -> Link:
-        """Link class, used to represent a link to a service.
+    Attributes:
+        display_name (str): displayed name of the service
+        name (str): short name of the service
+        lan_ip (str): ip of the service on the local network
+        ip (str): ip of the service on the network
+        port (str): port of the service
+        path (str, optional): url path of the service. Defaults to None.
+    """
 
-        Args:
-            display_name (str): displayed name of the service
-            name (str): short name of the service
-            lan_ip (str): ip of the service on the local network
-            ip (str): ip of the service on the network
-            port (str): port of the service
-            path (str, optional): url path of the service. Defaults to None.
-
-        Returns:
-            Link
-        """
-        self._display_name = display_name
-        self._name = name
-        self._lan_ip = lan_ip
-        self._ip = ip
-        self._port = port
-        self._path = path
+    display_name: str
+    name: str
+    lan_ip: str
+    ip: str
+    port: str
+    path: str | None = None
 
     @staticmethod
-    def fromDict(dictionary: dict) -> Link:
+    def from_dict(dictionary: dict) -> Link:
         """Create a Link object from a dictionary.
 
         Args:
@@ -47,7 +37,7 @@ class Link:
         """
         return Link(**dictionary)
 
-    def getFullUrl(self, zerotier: bool = False) -> str:
+    def get_full_url(self, *, zerotier: bool = False) -> str:
         """Get the full url of the service.
 
         Args:
@@ -62,7 +52,7 @@ class Link:
 
         return self.lan_url
 
-    def getPropertiesDict(self, lan: bool = False) -> dict[str, str]:
+    def get_properties_dict(self, *, lan: bool = False) -> dict[str, str]:
         """Get the properties as a dictionary.
 
         Args:
@@ -72,7 +62,7 @@ class Link:
         Returns:
             dict[str, str]
         """
-        properties = {"name": self._display_name}
+        properties = {"name": self.display_name}
 
         if lan:
             properties["href"] = self.lan_url
@@ -84,20 +74,15 @@ class Link:
     @property
     def lan_url(self) -> str:
         """Get the url of the service on the local network."""
-        if self._path is None:
-            return f"http://{self._lan_ip}:{self._port}"
+        if self.path is None:
+            return f"http://{self.lan_ip}:{self.port}"
 
-        return f"http://{self._lan_ip}:{self._port}/{self._path}"
+        return f"http://{self.lan_ip}:{self.port}/{self.path}"
 
     @property
     def full_url(self) -> str:
         """Get the url of the service on the network."""
-        if self._path is None:
-            return f"http://{self._ip}:{self._port}"
+        if self.path is None:
+            return f"http://{self.ip}:{self.port}"
 
-        return f"http://{self._ip}:{self._port}/{self._path}"
-
-    @property
-    def display_name(self) -> str:
-        """Get the displayed name of the service."""
-        return self._display_name
+        return f"http://{self.ip}:{self.port}/{self.path}"

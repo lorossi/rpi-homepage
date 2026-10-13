@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Self
 
 import toml
 
@@ -11,7 +13,7 @@ class Settings:
     """Base settings class."""
 
     @classmethod
-    def fromDict(cls, dictionary: dict) -> ServerSettings:
+    def from_dict(cls, dictionary: dict) -> Self:
         """Create a settings object from a dictionary.
 
         Args:
@@ -23,7 +25,7 @@ class Settings:
         return cls(**dictionary)
 
     @classmethod
-    def fromToml(cls, path: str, class_name: str = None) -> ServerSettings:
+    def from_toml(cls, path: str, class_name: str | None = None) -> Self:
         """Create a settings object from a toml file.
 
         Args:
@@ -34,17 +36,18 @@ class Settings:
 
         Returns:
             Settings: The settings object.
-        """
-        try:
-            with open(path, "r") as f:
-                toml_data = toml.load(f)
-                if class_name is not None:
-                    return cls(**toml_data[class_name])
-                else:
-                    return cls(**toml_data)
 
-        except (FileNotFoundError, toml.TomlDecodeError):
-            return cls()
+        Raises:
+            FileNotFoundError: If the toml file does not exist.
+            toml.TomlDecodeError: If the toml file is not valid.
+        """
+        with Path(path).open() as f:
+            toml_data = toml.load(f)
+
+        if class_name is not None:
+            return cls.from_dict(toml_data[class_name])
+
+        return cls.from_dict(toml_data)
 
 
 @dataclass

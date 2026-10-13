@@ -4,19 +4,27 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Callable
+from typing import TYPE_CHECKING
 
+import toml
 import uvicorn
-from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler as Scheduler
 from fastapi import APIRouter, FastAPI
 from fastapi import Request as FastAPIRequest
 from fastapi.responses import HTMLResponse
+from fastapi.responses import Response as FastAPIResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from modules.settings import ServerSettings
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from apscheduler.job import Job
+
+logger = logging.getLogger(__name__)
 
 
 class Request(FastAPIRequest):
@@ -29,6 +37,10 @@ class HTTPException(StarletteHTTPException):
 
 class HTMLResponse(HTMLResponse):
     """Mask for HTMLResponse class."""
+
+
+# alias (not a mask) so that template responses are still instances of it
+Response = FastAPIResponse
 
 
 class Server:
@@ -45,12 +57,13 @@ class Server:
     _settings_path: str
     _schedules: dict[Callable, Job]
 
-    def __init__(self) -> Server:
+    def __init__(self) -> None:
         """Instantiate a new Server object.
 
         Throws an error if instantiated directly.
         """
-        raise NotImplementedError("Server is an abstract class")
+        msg = "Server is an abstract class"
+        raise NotImplementedError(msg)
 
     def __init_subclass__(cls) -> None:
         """Initialize the subclass.
@@ -58,64 +71,64 @@ class Server:
         Args:
             cls (Server): The subclass.
         """
-        logging.info(f"Initializing subclass {cls.__name__}")
+        logger.info("Initializing subclass %s", cls.__name__)
         cls._fastapi_app = FastAPI()
         cls._router = APIRouter()
         cls._scheduler = Scheduler()
         cls._schedules = {}
 
-    def loadSettings(self) -> ServerSettings:
+    def load_settings(self) -> ServerSettings:
         """Load the settings."""
-        logging.info("Loading settings")
+        logger.info("Loading settings")
         try:
-            settings = ServerSettings.fromToml(
+            settings = ServerSettings.from_toml(
                 self._settings_path,
                 self.__class__.__name__,
             )
-        except (FileNotFoundError, TypeError):
-            logging.error("Settings file not found")
+        except FileNotFoundError, toml.TomlDecodeError:
+            logger.exception("Could not load settings from %s", self._settings_path)
             raise
 
-        logging.info("Loaded settings")
+        logger.info("Loaded settings")
         return settings
 
-    def _setupGuvicorn(self, port: int, logging_config: str) -> uvicorn.Server:
+    def _setup_uvicorn(self, port: int, logging_config: str) -> uvicorn.Server:
         config = uvicorn.Config(
             self.app,
-            host="0.0.0.0",
+            host="0.0.0.0",  # noqa: S104 - the homepage is served to the whole LAN
             port=port,
             loop="asyncio",
             log_config=logging_config,
         )
         return uvicorn.Server(config=config)
 
-    def addScheduleInterval(self, interval: float, method: Callable) -> None:
+    def add_schedule_interval(self, interval: float, method: Callable) -> None:
         """Add a schedule interval.
 
         Args:
             interval (float): The interval in seconds.
             method (Callable): The method to call.
         """
-        logging.info(f"Adding schedule interval {interval} {method}")
+        logger.info("Adding schedule interval %s %s", interval, method)
         self._schedules[method] = self._scheduler.add_job(
             method,
             "interval",
             seconds=interval,
         )
-        logging.info("Added schedule interval")
+        logger.info("Added schedule interval")
 
-    def removeSchedule(self, method: Callable) -> None:
+    def remove_schedule(self, method: Callable) -> None:
         """Remove a schedule.
 
         Args:
             method (Callable): The method to remove.
         """
-        logging.info(f"Removing schedule {method}")
+        logger.info("Removing schedule %s", method)
         self._schedules[method].remove()
         del self._schedules[method]
-        logging.info("Removed schedule")
+        logger.info("Removed schedule")
 
-    def addRoute(
+    def add_route(
         self,
         path: str,
         f: Callable,
@@ -133,16 +146,18 @@ class Server:
         if methods is None:
             methods = ["GET"]
 
-        logging.info(f"Adding route {path} {f} {methods}")
+        logger.info("Adding route %s %s %s", path, f, methods)
 
         self._router.add_api_route(
             path=path,
             endpoint=f,
             methods=methods,
         )
-        logging.info("Added route")
+        logger.info("Added route")
 
-    def addStaticRoute(self, path: str, directory: str, html: bool = False) -> None:
+    def add_static_route(
+        self, path: str, directory: str, *, html: bool = False
+    ) -> None:
         """Add a static route to the server.
 
         Args:
@@ -151,40 +166,40 @@ class Server:
             html (bool, optional): Whether or not the static files are html files.
                 Defaults to False.
         """
-        logging.info(f"Adding static route {path} {directory}")
+        logger.info("Adding static route %s %s", path, directory)
         self._fastapi_app.mount(
             path,
             StaticFiles(directory=directory, html=html),
             name="static",
         )
-        logging.info("Added static route")
+        logger.info("Added static route")
 
-    def addHTTPExceptionRoute(self, f: Callable) -> None:
+    def add_http_exception_route(self, f: Callable) -> None:
         """Add an error route to the server.
 
         Args:
             f (function): The function to execute.
         """
-        logging.info(f"Adding error route {f}")
+        logger.info("Adding error route %s", f)
         self._fastapi_app.add_exception_handler(StarletteHTTPException, f)
-        logging.info("Added error route")
+        logger.info("Added error route")
 
-    def addTemplateFolder(self, directory: str) -> None:
+    def add_template_folder(self, directory: str) -> None:
         """Add a template folder to the server.
 
         Args:
             directory (str): The directory of the template folder.
         """
-        logging.info(f"Adding template folder {directory}")
+        logger.info("Adding template folder %s", directory)
         self._templates = Jinja2Templates(directory=directory)
-        logging.info("Added template folder")
+        logger.info("Added template folder")
 
-    def generateTemplateResponse(
+    def generate_template_response(
         self,
         request: Request,
         template: str,
-        **kwargs,
-    ) -> HTMLResponse:
+        **kwargs: object,
+    ) -> Response:
         """Generate a template.
 
         Args:
@@ -193,42 +208,31 @@ class Server:
             **kwargs: The template arguments.
 
         Returns:
-            HTMLResponse: The generated template.
+            Response: The generated template.
         """
-        logging.info(f"Generating template {template} {kwargs}")
-        return self._templates.TemplateResponse(
-            template,
-            {
-                "request": request,
-                **kwargs,
-            },
-        )
+        logger.info("Generating template %s %s", template, kwargs)
+        return self._templates.TemplateResponse(request, template, kwargs)
 
-    async def startAsync(self) -> None:
-        """Start the server.
-
-        Returns:
-            Server: The instance of the running server
-
-        """
+    async def start_async(self) -> None:
+        """Start the server."""
         if not hasattr(self, "_settings"):
-            logging.warning("Settings not loaded, loading now")
-            self.loadSettings()
+            logger.warning("Settings not loaded, loading now")
+            self._settings = self.load_settings()
 
         port = self._settings.port
-        logging.info(f"Starting server on port {port}")
-        server = self._setupGuvicorn(
+        logger.info("Starting server on port %s", port)
+        server = self._setup_uvicorn(
             port=port,
             logging_config=self._settings.logging_config,
         )
 
         self._scheduler.start()
         await server.serve()
-        logging.info("Server stopped")
+        logger.info("Server stopped")
 
     def start(self) -> None:
         """Start the server synchronously."""
-        asyncio.run(self.startAsync())
+        asyncio.run(self.start_async())
 
     @property
     def app(self) -> FastAPI:
