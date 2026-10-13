@@ -2,5 +2,5 @@
 .venv
 __pycache__
 rpi-homepage/settings/*.toml
-!rpi-homepage/settings/*example.toml
+!rpi-homepage/settings/*.example.toml
 cache/
