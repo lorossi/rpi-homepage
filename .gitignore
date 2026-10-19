@@ -1,5 +1,6 @@
 *.log
 .venv
 __pycache__
-settings/*.toml
-!settings/*.example.toml
+rpi-homepage/settings/*.toml
+!rpi-homepage/settings/*.example.toml
+cache/
