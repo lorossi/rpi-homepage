@@ -1,16 +1,15 @@
 """This module contains the logic to handle the homepage."""
 
-from __future__ import annotations
-
 import asyncio
 
-from modules.rpiserver import RPiServer
+from modules.logs import setup_logging
+from modules.rpiserver import serve
 
 
 async def main() -> None:
     """Program entry point, starting the server."""
-    r = RPiServer()
-    await r.start_async()
+    setup_logging()
+    await serve()
 
 
 if __name__ == "__main__":
