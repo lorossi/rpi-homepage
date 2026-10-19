@@ -1,0 +1,17 @@
+services:
+  rpi-homepage:
+    build: .
+    image: rpi-homepage:latest
+    container_name: rpi-homepage
+    restart: unless-stopped
+    # host networking keeps the real client IP visible to the app and uses the port from settings.toml
+    network_mode: host
+    volumes:
+      - ./rpi-homepage/settings:/app/rpi-homepage/settings:ro
+      # downloaded icons, kept across rebuilds
+      - icons-cache:/app/rpi-homepage/cache
+    environment:
+      - TZ=Europe/Rome
+
+volumes:
+  icons-cache:
