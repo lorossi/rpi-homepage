@@ -1,37 +1,27 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
   <head>
-    <meta name="description" content="RaspberryPi 4" />
     <meta charset="utf-8" />
-    <title>{% block title %} {% endblock title %}</title>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="RaspberryPi 4" />
     <meta name="author" content="Lorenzo Rossi" />
-    <link
-      rel="shortcut icon"
-      href="{{ url_for('static', path='/img/favicon.ico')}}"
-    />
-
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', path='/css/vars.css')}}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', path='/css/style.css')}}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', path='/css/bigscreens.css')}}"
-    />
-
-    {% block head %} {% endblock head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="icon" href="{{ url_for('static', path='/img/favicon.ico') }}" sizes="32x32" />
+    <link rel="icon" href="{{ url_for('static', path='/img/favicon.svg') }}" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/fonts.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/tokens.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/base.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/hero.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/layout.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/services.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/system.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/sparkline.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/disks.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/network.css') }}" />
+    {% block head %}{% endblock head %}
   </head>
 
   <body>
-    {% block body %} {% endblock body %}
+    {% block body %}{% endblock body %}
   </body>
 </html>

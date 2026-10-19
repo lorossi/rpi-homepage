@@ -1,45 +1,171 @@
-{% extends "base.html" %} {% block title %} RPi 4 Homepage {% endblock title %}
-{% block head %}
-<script src="{{ url_for('static', path='js/main.js')}}"></script>
+{% extends "base.html" %} {% block title %}RPi 4 Homepage{% endblock title %} {%
+block head %}
+<script src="{{ url_for('static', path='/js/main.js') }}" defer></script>
+<script type="module" src="{{ url_for('static', path='/js/blobs/main.js') }}"></script>
 {% endblock head %} {% block body %}
-<div class="page dark-text">
-  <div class="background"></div>
-  <div class="content">
-    <div class="top">
-      <div class="stats">
-        <div id="greeting">{{greeting.message}}</div>
-        <div id="time"></div>
-        <div id="date"></div>
-      </div>
+<div class="page">
+  <header class="hero">
+    <canvas class="blobs" id="blobs" aria-hidden="true"></canvas>
+    <div class="hero-shade"></div>
+    <div class="hero-content">
+      <div class="mono date" id="date"></div>
+      <div class="mono clock" id="time"></div>
     </div>
+  </header>
 
-    <div class="center">
-      <div class="weather">
-        <p id="city"></p>
-        <p id="temperature-humidity"></p>
-        <p id="description"></p>
-      </div>
-    </div>
-
-    <div class="bottom">
-      <div class="links">
-        {% for link in links %}
-        <div class="link">
-          <a href="{{link.href}}">{{link.name}}</a>
+  <main class="content">
+    <section class="services" aria-labelledby="services-label">
+      <div class="lbl" id="services-label">Services</div>
+      <div class="groups{% if '' in groups %} flat{% endif %}">
+        {% for category, links in groups.items() %}
+        <div class="group">
+          {% if category %}<div class="mono group-name">{{ category }}</div>{% endif %}
+          <div class="group-links">
+            {% for link in links %}
+            <a class="tile" href="{{ link.href }}">
+              <span class="ico" aria-hidden="true">
+                {%- if link.icon %}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  {{ link.icon | safe }}
+                </svg>
+                {%- else %}{% include "icons/link.svg" %}{% endif -%}
+              </span>
+              <span class="tile-name">{{ link.name }}</span>
+            </a>
+            {% endfor %}
+          </div>
         </div>
         {% endfor %}
       </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="credits">
-    <p class="photographer">
-      <a></a>
-    </p>
-    <p class="location"></p>
-    <p class="description"></p>
-  </div>
+    <section class="sys" aria-label="System status">
+      <div class="sys-head">
+        <div class="lbl">System</div>
+        <div class="mono muted small" id="uptime"></div>
+      </div>
 
-  <div class="view-image">view image</div>
+      <div class="card">
+        <div class="metric">
+          <div class="metric-head">
+            <span class="lbl">CPU</span>
+            <span class="mono value"
+              ><span id="cpu">-</span><span class="unit">%</span></span
+            >
+          </div>
+          <svg
+            class="spark"
+            viewBox="0 0 300 56"
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="CPU usage, recent history"
+          >
+            <path id="cpu-area" class="area"></path>
+            <path id="cpu-line" class="line"></path>
+          </svg>
+          <div class="mono muted small" id="load"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="metric">
+          <div class="metric-head">
+            <span class="lbl">Temperature</span>
+            <span class="mono value"
+              ><span id="temperature">-</span
+              ><span class="unit"> °C</span></span
+            >
+          </div>
+          <svg
+            class="spark"
+            viewBox="0 0 300 56"
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="Temperature, recent history"
+          >
+            <path id="temperature-area" class="area"></path>
+            <path id="temperature-line" class="line"></path>
+          </svg>
+          <div class="mono muted small status" id="temperature-status">
+            <span class="status-icon status-ok" aria-hidden="true"
+              >{% include "icons/check.svg" %}</span
+            >
+            <span class="status-icon status-alert" aria-hidden="true"
+              >{% include "icons/circle-alert.svg" %}</span
+            >
+            <span id="temperature-status-label"></span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="metric">
+          <div class="metric-head">
+            <span class="lbl">RAM</span>
+            <span class="mono value"
+              ><span id="ram">-</span><span class="unit" id="ram-total"></span
+            ></span>
+          </div>
+          <svg
+            class="spark"
+            viewBox="0 0 300 56"
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="RAM usage, recent history"
+          >
+            <path id="ram-area" class="area"></path>
+            <path id="ram-line" class="line"></path>
+            <path class="limit" d="M0 1 L300 1"></path>
+          </svg>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="metric disks">
+          <span class="lbl">Disk</span>
+          <div class="disk-list" id="disks"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="metric network">
+          <span class="lbl">Network</span>
+          <svg
+            class="spark tall"
+            viewBox="0 0 300 56"
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="Download and upload speed, recent history"
+          >
+            <path id="download-area" class="area"></path>
+            <path id="download-line" class="line"></path>
+            <path id="upload-line" class="line up"></path>
+          </svg>
+          <div class="rates">
+            <div class="rate">
+              <span class="rate-icon down" aria-hidden="true"
+                >{% include "icons/arrow-down.svg" %}</span
+              >
+              <span class="sr">Download</span>
+              <span class="mono rate-value" id="download">-</span>
+            </div>
+            <div class="rate">
+              <span class="rate-icon up" aria-hidden="true"
+                >{% include "icons/arrow-up.svg" %}</span
+              >
+              <span class="sr">Upload</span>
+              <span class="mono rate-value" id="upload">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
 {% endblock body %}
