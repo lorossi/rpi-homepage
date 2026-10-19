@@ -1,16 +1,36 @@
 [RPiServer]
 port = 1234
-links_path = "settings/links.toml"
-greetings_path = "settings/greetings.toml"
-logging_config = "settings/logging.ini"
+# optional, clients in these networks get the lan urls of the links
+local_networks = ["192.168.1.0/24", "127.0.0.0/8", "::1/128"]
+# optional, ips of the reverse proxies trusted to set X-Forwarded-For
+# leave empty (the default) if the homepage is not behind a proxy
+forwarded_allow_ips = []
+# optional, order of the link categories; categories not listed here follow
+# in order of first appearance, uncategorized links are shown last
+categories = []
 
-[WeatherService]
-api_key = ""
-city = ""
-language = ""
-cache_duration = 300
+# optional, these are the defaults
+[System]
+disks = ["/"]
+sample_interval = 10 # seconds between two samples
+history_length = 30 # samples shown in the charts
 
-[UnsplashService]
-api_key = ""
-query = []
-cache_duration = 30
+# optional, these are the defaults
+# icons are downloaded once and then served from the cache folder
+[Icons]
+url = "https://cdn.jsdelivr.net/npm/lucide-static@1.56.0/icons/{name}.svg"
+cache_path = "cache/icons"
+retry_interval = 3600 # seconds between two attempts at downloading missing icons
+
+# one table per service; path, category and icon are optional
+# icon is the name of a Lucide icon, see https://lucide.dev/icons
+# links are grouped by category, see categories above
+[[Links]]
+display_name = ""
+name = ""
+port = ""
+vpn_ip = ""
+lan_ip = ""
+path = ""
+category = ""
+icon = ""
