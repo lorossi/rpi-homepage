@@ -1,0 +1,39 @@
+.disk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.disk {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.disk-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.disk-head span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--track);
+  overflow: hidden;
+}
+
+.fill {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--data);
+  transition: width 0.3s;
+}

@@ -1,0 +1,103 @@
+.sys {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--data);
+}
+
+.sys .lbl,
+.sys .muted,
+.sys .unit {
+  color: var(--data-muted);
+}
+
+.sys-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.card {
+  flex: 1 1 auto;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metric.disks {
+  gap: 14px;
+}
+
+.metric.network {
+  gap: 10px;
+}
+
+.metric-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.value {
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+.unit {
+  font-size: 16px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* the icon matching data-status is shown, none while the sensor is missing */
+.status-icon {
+  display: none;
+}
+
+.status-icon svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+}
+
+.status[data-status="normal"] .status-ok,
+.status[data-status="warm"] .status-alert,
+.status[data-status="hot"] .status-alert {
+  display: flex;
+}
+
+.status[data-status="normal"] .status-ok {
+  color: var(--ok);
+}
+
+.status[data-status="warm"] .status-alert {
+  color: var(--warn);
+}
+
+.status[data-status="hot"] .status-alert {
+  color: var(--hot);
+}

@@ -1,0 +1,34 @@
+.spark {
+  display: block;
+  width: 100%;
+  height: 40px;
+}
+
+.spark.tall {
+  height: 48px;
+}
+
+.spark .area {
+  fill: var(--data-fill);
+}
+
+.spark .line {
+  fill: none;
+  stroke: var(--data);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spark .line.up {
+  stroke: var(--data-alt);
+}
+
+.spark .limit {
+  fill: none;
+  stroke: var(--limit);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  vector-effect: non-scaling-stroke;
+}
